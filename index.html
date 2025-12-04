@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="HAI-P200 : Gateway IoT Industrielle Edge. Télémaintenance sécurisée (Tailscale), Monitoring Grafana, Node-RED, Ignition Edge. Compatible S7, Modbus.">
+    <meta name="keywords" content="PC Industriel, Gateway IoT, Edge Computing, Raspberry Pi CM4, Télémaintenance, Tailscale, Node-RED, Grafana, Ignition Edge">
+    
+    <title>HAI-P200 | Gateway IoT & Télémaintenance - Hexa-AI</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Effet de survol cartes */
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cta-button { transition: all 0.3s ease; }
+        
+        /* Ligne connecteur "Toboggan" */
+        .connector-line {
+            width: 2px;
+            height: 40px;
+            background: #374151; /* gray-700 */
+            margin: 0 auto;
+        }
+        /* Animation Image venant de la droite */
+        @keyframes slideInRight {
+            0% { opacity: 0; transform: translateX(50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Animation Badge venant du bas (Effet Notification) */
+        @keyframes slideUpNotification {
+            0% { 
+                opacity: 0; 
+                transform: translateY(40px); /* Part de plus bas */
+            }
+            70% {
+                transform: translateY(-5px); /* Monte un peu trop haut (rebond) */
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); /* Se stabilise */
+            }
+        }
+        
+        /* Classes à appliquer */
+        .animate-image-right {
+            opacity: 0;
+            animation: slideInRight 1s ease-out forwards;
+            animation-delay: 0.2s; /* Commence vite */
+        }
+
+        .animate-notification {
+            opacity: 0;
+            animation: slideUpNotification 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: 1.2s; /* Arrive APRES l'image pour attirer l'oeil */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 leading-relaxed">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-sm border-b border-gray-800 shadow-md">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="index.html" class="transition-opacity hover:opacity-80">
+                <img src="img/Hexa-AI white.png" alt="Hexa-AI" class="h-8 w-auto">
+            </a>
+            
+            <ul class="hidden md:flex items-center space-x-8">
+                <li><a href="#defis" class="text-gray-300 hover:text-white transition-colors">Défis</a></li>
+                <li><a href="#solutions" class="text-gray-300 hover:text-white transition-colors">Fonctionnalités</a></li>
+                <li><a href="#specs" class="text-gray-300 hover:text-white transition-colors">Spécifications</a></li>
+                <li><a href="#contact" class="cta-button bg-blue-600 text-white text-sm font-semibold px-5 py-2 rounded-md shadow-lg hover:bg-blue-700">Commander</a></li>
+            </ul>
+        </div>
+    </nav>
+
+<header class="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28 bg-gray-900">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                
+                <div class="lg:w-1/2">
+                    <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-blue-300 uppercase bg-blue-900/30 rounded-full border border-blue-800">
+                        Nouveau Produit
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+                        Monitorez vos machines dès le premier jour.<br>
+                        <span class="text-blue-500">Sans complexité IT.</span>
+                    </h1>
+                    <p class="text-xl text-gray-400 mb-8 font-light">
+                        La première Gateway IoT industrielle qui combine la simplicité d'une solution propriétaire ("Boîte Noire") et la puissance illimitée de l'Open Source.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="https://calendar.app.google/kLXvjUkXtg4DYdHQ8" target="_blank" class="cta-button bg-blue-600 text-white text-lg font-bold px-8 py-4 rounded-lg shadow-lg hover:bg-blue-700 text-center">
+                            Demander une Démo
+                        </a>
+                        <a href="#specs" class="cta-button bg-transparent border border-gray-600 text-gray-300 text-lg font-semibold px-8 py-4 rounded-lg hover:bg-gray-800 hover:text-white text-center transition-colors">
+                            Fiche Technique
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:w-1/2 relative">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-purple-600 opacity-20 blur-3xl rounded-full"></div>
+                    
+                    <div class="relative rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur shadow-2xl overflow-hidden animate-image-right">
+                        <img src="img/hero-image-hai-p200-4g.png" alt="HAI-P200 et Dashboard" class="w-full h-auto">
+                    </div>
+                    
+                    <div class="absolute -bottom-10 -left-6 md:-left-12 bg-gray-800 border border-gray-700 text-white p-5 rounded-lg shadow-2xl hidden md:block animate-notification max-w-sm">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
+                            </div>
+                            
+                            <div>
+                                <p class="font-bold text-sm text-white mb-1">Stack Complète Pré-installée</p>
+                                <div class="text-xs text-gray-400 space-y-1">
+                                    <p class="flex items-center gap-2">
+                                        <span class="text-blue-400">●</span> Tailscale & Grafana
+                                    </p>
+                                    <p class="flex items-center gap-2">
+                                        <span class="text-orange-400">●</span> Node-RED & Ignition Edge™
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="bg-gray-900 py-10 text-center px-4 border-b border-gray-800">
+        <p class="text-lg md:text-xl font-medium text-gray-400 max-w-3xl mx-auto">
+            Pourquoi les intégrateurs et exploitants changent-ils leurs modems standards pour le HAI-P200 ? <br>
+            <span class="text-white font-bold">La réponse tient en trois défis quotidiens...</span>
+        </p>
+        <div class="connector-line mt-8"></div>
+    </div>
+
+    <section id="defis" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">
+                Pourquoi le monitoring est-il encore si complexe ?
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                
+                <div class="feature-card bg-gray-700 p-8 rounded-xl border border-gray-600">
+                    <div class="w-12 h-12 bg-red-900/30 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Le casse-tête VPN</h3>
+                    <p class="text-gray-400">
+                        Entre les abonnements prohibitifs et la complexité des VPN, l'équation est difficile. Vous cherchez la sécurité sans subir une <strong>double dépendance</strong> (Service Cloud + Matériel propriétaire).
+                    </p>
+                </div>
+
+                <div class="feature-card bg-gray-700 p-8 rounded-xl border border-gray-600">
+                    <div class="w-12 h-12 bg-yellow-900/30 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">L'illusion de l'IA</h3>
+                    <p class="text-gray-400">
+                        On parle d'IA, mais le terrain est plus cru : on peine déjà à collecter une donnée fiable. Vous perdez du temps à construire la "tuyauterie" au lieu de vous concentrer sur la <strong>valeur ajoutée</strong>.
+                    </p>
+                </div>
+
+                <div class="feature-card bg-gray-700 p-8 rounded-xl border border-gray-600">
+                    <div class="w-12 h-12 bg-blue-900/30 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">La barrière IT</h3>
+                    <p class="text-gray-400">
+                        La complexité technique (Linux, Réseau, Code) ne doit plus limiter vos ambitions. Ce projet ne devrait pas être abandonné car la marche informatique semble trop haute pour vos équipes.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="bg-gray-900 py-10 text-center px-4 border-t border-b border-gray-800">
+        <p class="text-lg md:text-xl font-medium text-gray-400 max-w-3xl mx-auto">
+            Nous avons conçu le HAI-P200 pour éliminer ces frictions.<br>
+            <span class="text-blue-500 font-bold">Voici comment nous transformons des jours de configuration en minutes d'installation.</span>
+        </p>
+        <div class="connector-line mt-8"></div>
+    </div>
+
+    <section id="solutions" class="py-20 bg-gray-900 overflow-hidden">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-16">
+                De la donnée brute à la valeur ajoutée.<br><span class="text-gray-500">Une suite logicielle unifiée.</span>
+            </h2>
+
+            <div class="flex flex-col md:flex-row items-center gap-12 mb-24">
+                <div class="md:w-1/2 order-2 md:order-1">
+                    <div class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-800">
+                        <img src="img/conf-centraliser-sans-coder-hai-p200-4g.png"  alt="Interface Configurateur No-Code" class="w-full opacity-90 hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+                <div class="md:w-1/2 order-1 md:order-2">
+                    <div class="inline-block bg-blue-900/50 text-blue-300 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-blue-800">ÉTAPE 1 : CONNECTEZ</div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Centralisez sans coder.</h3>
+                    <p class="text-lg text-gray-400 mb-6">
+                        Fini les fichiers JSON. Notre <strong>Configurateur Graphique</strong> unifie vos protocoles (S7, Modbus, OPC-UA).
+                    </p>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span><strong>Simplicité :</strong> Déclarez vos équipements en quelques clics.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span><strong>Organisation :</strong> Catégorisez immédiatement (Alarmes, Mesures).</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-12 mb-24">
+                <div class="md:w-1/2">
+                    <div class="inline-block bg-purple-900/50 text-purple-300 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-purple-800">ÉTAPE 2 : VISUALISEZ</div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Dashboards instantanés.</h3>
+                    <p class="text-lg text-gray-400 mb-6">
+                        Le HAI-P200 organise vos données. La stack pré-installée (Telegraf + SQLite + Grafana) génère les visualisations automatiquement.
+                    </p>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span><strong>Historisation locale :</strong> Données sécurisées sur SSD/eMMC.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span><strong>Zéro config :</strong> Les tableaux de bord s'adaptent dynamiquement.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-800">
+                        <img src="img/dashboard-hai-p200-4g.png"  alt="Dashboard Grafana Automatique" class="w-full opacity-90 hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 order-2 md:order-1">
+                    <div class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-800">
+                        <img src="img/IgnitionEdge-Node-Red-hai-p200-4g.png"  alt="Ignition Edge et Node-RED" class="w-full opacity-90 hover:opacity-100 transition-opacity">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur text-xs text-center py-2 text-gray-300 border-t border-gray-700">
+                            Node-Red & Ignition Edge™ pré-installés
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 order-1 md:order-2">
+                    <div class="inline-block bg-yellow-900/50 text-yellow-300 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-yellow-800">ÉTAPE 3 : VALORISEZ</div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Passez du monitoring au SCADA.</h3>
+                    <p class="text-lg text-gray-400 mb-6">
+                        Pour les besoins avancés, le HAI-P200 est une véritable Edge Gateway multi-compétence. Deux moteurs puissants sont pré-conteneurisés :
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start p-4 rounded-lg bg-gray-800 border border-gray-700 hover:border-orange-500 transition-colors group">
+                            <div class="flex-shrink-0 mt-1">
+                                <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-white font-bold group-hover:text-orange-400 transition-colors">Ignition Edge™ (Inductive Automation)</h4>
+                                <p class="text-sm text-gray-400 mt-1">Déjà installé et conteneurisé. Saisissez simplement votre licence pour déverrouiller l'application complète : créez vos <strong>écrans de supervision locale</strong> et synchronisez-les avec un serveur central.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start p-4 rounded-lg bg-gray-800 border border-gray-700 hover:border-red-500 transition-colors group">
+                            <div class="flex-shrink-0 mt-1">
+                                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-white font-bold group-hover:text-red-400 transition-colors">Node-RED</h4>
+                                <p class="text-sm text-gray-400 mt-1">Pour l'agilité : connectez des API, formatez des données ou générez des rapports PDF automatisés via IA.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="specs" class="py-20 bg-gray-800 border-t border-gray-700">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-12">
+                Conçu pour durer. Partout.
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+                
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-900 h-full lg:min-h-[600px]">
+                    <img src="img/hai-p200-4g.jpeg" alt="Installation réelle du HAI-P200 en armoire électrique sur Rail-DIN" class="w-full h-full object-cover">
+                    
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900 to-transparent p-6 pt-12">
+                        <p class="text-white font-semibold">Application de télémaintenance sur machine d'assemblage</p>
+                        <p class="text-sm text-gray-300">Intégration sur Rail-DIN au cœur des équipements.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    
+                    <div class="bg-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg hover:border-blue-500 transition-colors">
+                        <div class="flex items-center mb-4 text-blue-500">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                            <h3 class="font-bold text-xl text-white">Cœur & Puissance</h3>
+                        </div>
+                        <ul class="space-y-3 text-gray-400">
+                            <li class="flex justify-between border-b border-gray-800 pb-2">
+                                <span>Module :</span> 
+                                <strong class="text-gray-200 text-right">
+                                    Raspberry Pi CM4<br>
+                                    <span class="text-xs font-normal text-blue-400">Quad-Core @ 1.5GHz • 4Go RAM</span>
+                                </strong>
+                            </li>
+                            <li class="flex justify-between border-b border-gray-800 pb-2">
+                                <span>Stockage :</span> 
+                                <strong class="text-gray-200 text-right">eMMC 32Go (Soudé)<br>+ SD Indus. 128Go (Option)</strong>
+                            </li>
+                            <li class="flex justify-between pt-2">
+                                <span>Système :</span> 
+                                <strong class="text-gray-200 text-right">Debian 12 (Bookworm)<br><span class="text-xs font-normal text-blue-400">+ Interface Web Admin</span></strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg hover:border-blue-500 transition-colors">
+                        <div class="flex items-center mb-4 text-blue-500">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path></svg>
+                            <h3 class="font-bold text-xl text-white">Connectivité</h3>
+                        </div>
+                        <ul class="space-y-3 text-gray-400">
+                            <li class="flex justify-between border-b border-gray-800 pb-2">
+                                <span>Réseau Filaire :</span> 
+                                <strong class="text-gray-200">Dual LAN (IT/OT)</strong>
+                            </li>
+                            <li class="flex justify-between border-b border-gray-800 pb-2">
+                                <span>Ports Série :</span> 
+                                <strong class="text-gray-200 text-right">2x RS232 + 2x RS485<br><span class="text-xs font-normal text-gray-500">(Bornier industriel)</span></strong>
+                            </li>
+                            <li class="flex justify-between border-b border-gray-800 pb-2">
+                                <span>Sans-Fil :</span> 
+                                <strong class="text-gray-200">Modem 4G LTE + GPS</strong>
+                            </li>
+                            <li class="flex justify-between pt-2">
+                                <span>Accès Distant :</span> 
+                                <strong class="text-gray-200">Tailscale intégré (VPN)</strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg hover:border-blue-500 transition-colors">
+                        <div class="flex items-center mb-4 text-blue-500">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <h3 class="font-bold text-xl text-white">Robustesse</h3>
+                        </div>
+                        <ul class="space-y-3 text-gray-400">
+                            <li class="flex justify-between border-b border-gray-800 pb-2"><span>Format :</span> <strong class="text-gray-200">Boîtier Alu + Rail DIN</strong></li>
+                            <li class="flex justify-between border-b border-gray-800 pb-2"><span>Alimentation :</span> <strong class="text-gray-200">9-36V DC + Protection</strong></li>
+                            <li class="flex justify-between pt-2"><span>Fiabilité :</span> <strong class="text-gray-200">RTC & Watchdog Hardware</strong></li>
+                        </ul>
+                    </div>
+
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                    Prêt à connecter vos installations ?
+                </h2>
+                <p class="text-xl text-gray-400">
+                    Besoin d'une unité de test pour demain ou d'une flotte pour l'année prochaine ?
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl flex flex-col items-center text-center hover:border-blue-500 transition-colors">
+                    <div class="bg-gray-700 p-4 rounded-full mb-6 text-blue-400">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Démarrer maintenant (PoC)</h3>
+                    <p class="text-gray-400 mb-8 flex-grow">
+                        Commandez votre unité standard HAI-P200 (eMMC 32Go).<br><strong class="text-blue-400">Expédition 24/48h.</strong>
+                    </p>
+                    <a href="#" class="w-full cta-button bg-gray-700 text-white text-lg font-bold px-8 py-4 rounded-lg hover:bg-gray-600 border border-gray-600">
+                        Commander un échantillon
+                    </a>
+                </div>
+
+                <div class="bg-blue-600 p-8 rounded-2xl shadow-xl flex flex-col items-center text-center text-white transform md:-translate-y-4">
+                    <div class="bg-blue-500 p-4 rounded-full mb-6">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Projet & Déploiement</h3>
+                    <p class="text-blue-100 mb-8 flex-grow">
+                        Vous avez un cahier des charges ?<br>
+                        Construisons votre configuration idéale (Antenne ext., µSD 128Go, Quantités...).
+                    </p>
+                    <a href="https://tally.so/r/wgDXVO" target="_blank" class="w-full cta-button bg-white text-blue-600 text-lg font-bold px-8 py-4 rounded-lg hover:bg-gray-100 shadow-lg">
+                        Demander un chiffrage
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-16 bg-gray-900 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center text-gray-500">
+            <p class="text-lg font-semibold text-gray-300 mb-2">Hexa-AI</p>
+            <p class="mb-6">Notre ADN : Expertise des plateformes ouvertes.</p>
+            
+            <a href="https://hexa-ai.notion.site/Documentation-HAI-P200-4G-1f151d7dad2f80ebb3fbef6c4cda62ea" target="_blank" class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                Espace Documentation & Support Technique
+            </a>
+            
+            <div class="mt-10 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="text-sm text-gray-400 text-center md:text-left">
+                    <p><strong>Hexa-AI</strong></p>
+                    <p>Bureau B2, Bâtiment Terraditta</p>
+                    <p>287 rue Barthélémy Thimonnier, 69530 BRIGNAIS</p>
+                    <p class="mt-2"><a href="mailto:contact@hexa-ai.fr" class="hover:text-white">contact@hexa-ai.fr</a></p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="https://www.linkedin.com/company/hexaai" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <p class="mt-8 text-sm">&copy; 2025 Hexa-AI. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <a href="#" id="to-top-button" class="fixed bottom-8 right-8 z-50 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+    </a>
+
+    <script>
+        const toTopButton = document.getElementById('to-top-button');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                toTopButton.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                toTopButton.classList.add('opacity-0', 'pointer-events-none');
+            }
+        });
+    </script>
+</body>
+</html>
