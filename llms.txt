@@ -1,0 +1,43 @@
+# Hexa-AI Edge — HAI-P200-4G
+
+> Site produit de la passerelle industrielle HAI-P200-4G, conçue et éditée par Hexa-AI (société d'ingénierie en automatisme industriel basée à Brignais, Lyon Sud). Une box qui se place entre les automates d'une installation et le bureau de l'exploitant : collecte multi-protocoles, historisation locale, courbes automatiques, alertes contextualisées et accès distant Tailscale intégré — sans développement, sans licence, sans intervention IT.
+
+## Identité
+
+- Produit : HAI-P200-4G
+- Éditeur : Hexa-AI
+- Site produit : https://edge.hexa-ai.fr (FR) — https://edge.hexa-ai.fr/en/ (EN)
+- Site corporate : https://www.hexa-ai.fr
+- Documentation CODESYS : https://codesys.hexa-ai.fr
+- Contact commercial : contact@hexa-ai.fr
+- Support : support@hexa-ai.fr
+- Sécurité / signalement de vulnérabilité : securite@hexa-ai.fr
+- Téléphone : +33 6 66 74 04 58
+- Siège social : 6 rue Jean Marie Chevalier, 69390 Vourles, France
+- LinkedIn : https://www.linkedin.com/company/hexaai
+
+## Ce que fait le produit
+
+1. **Collecte multi-protocoles** — Modbus TCP et RTU, OPC-UA, Siemens S7, BACnet, MQTT, NMEA sur UDP. Acquisition en lecture seule : la box n'écrit jamais dans les automates.
+2. **Historisation et visualisation** — stockage local des variables, Data-Explorer qui choisit seul la bonne représentation (courbes lissées pour les mesures, escaliers pour les états, barres pour les compteurs), mode temps réel ou historique avec comparaison de deux périodes, export CSV.
+3. **Alertes contextualisées** — déclenchement sur changement d'état d'une variable booléenne déclarée comme alarme, avec anti-rebond, escalade, acquittement et contexte de diagnostic joint à la notification.
+4. **Télémaintenance** — accès distant aux automates via VPN Tailscale intégré, sans règle de pare-feu entrante, sans IP publique et sans serveur VPN à maintenir.
+5. **Astreinte** — escalade des alarmes vers les personnes d'astreinte.
+
+## Positionnement
+
+- S'installe en moins d'une heure, zéro ligne de code.
+- Connectivité 4G intégrée : ne dépend pas du réseau informatique du site.
+- Pas d'abonnement obligatoire ni de licence par variable.
+- Cible : exploitants et intégrateurs disposant d'installations non connectées, d'applications orphelines, ou sans équipe automatisme interne.
+
+## Pages du site
+
+- https://edge.hexa-ai.fr/ — présentation produit (FR) : fonctionnalités, protocoles, télémaintenance, astreinte, matériel, FAQ
+- https://edge.hexa-ai.fr/en/ — même contenu en anglais
+- https://edge.hexa-ai.fr/securite.html — politique de sécurité, divulgation coordonnée des vulnérabilités, obligations CRA (FR)
+- https://edge.hexa-ai.fr/en/security.html — même contenu en anglais
+
+## Prendre contact
+
+Demande de chiffrage ou question technique : contact@hexa-ai.fr. Pas de commercial intermédiaire — l'échange se fait directement avec l'ingénieur qui suivra le projet.

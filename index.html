@@ -1,473 +1,1062 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta name="description" content="HAI-P200 : Gateway IoT Industrielle Edge. Télémaintenance sécurisée (Tailscale), Monitoring Grafana, Node-RED, Ignition Edge. Compatible S7, Modbus.">
-    <meta name="keywords" content="PC Industriel, Gateway IoT, Edge Computing, Raspberry Pi CM4, Télémaintenance, Tailscale, Node-RED, Grafana, Ignition Edge">
-    
-    <title>HAI-P200 | Gateway IoT & Télémaintenance - Hexa-AI</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        
-        /* Effet de survol cartes */
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-        }
-        
-        .cta-button { transition: all 0.3s ease; }
-        
-        /* Ligne connecteur "Toboggan" */
-        .connector-line {
-            width: 2px;
-            height: 40px;
-            background: #374151; /* gray-700 */
-            margin: 0 auto;
-        }
-        /* Animation Image venant de la droite */
-        @keyframes slideInRight {
-            0% { opacity: 0; transform: translateX(50px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAI-P200-4G — Télémaintenance et monitoring de vos machines | Hexa-AI Edge</title>
+<meta name="description" content="Une seule box entre vos automates et votre bureau : collecte Modbus, OPC-UA et S7, historisation locale, courbes automatiques, alertes contextualisées et accès distant Tailscale intégré. Sans développement, sans licence, sans intervention IT.">
+<meta name="theme-color" content="#0a0f14">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="canonical" href="https://edge.hexa-ai.fr/">
+<link rel="alternate" hreflang="fr" href="https://edge.hexa-ai.fr/">
+<link rel="alternate" hreflang="en" href="https://edge.hexa-ai.fr/en/">
+<link rel="alternate" hreflang="x-default" href="https://edge.hexa-ai.fr/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hexa-AI Edge">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:url" content="https://edge.hexa-ai.fr/">
+<meta property="og:title" content="HAI-P200-4G — Monitorez vos machines et intervenez à distance">
+<meta property="og:description" content="Une seule box entre vos automates et votre bureau : collecte Modbus, OPC-UA et S7, historisation locale, courbes automatiques, alertes contextualisées et accès distant Tailscale intégré. Sans développement, sans licence, sans intervention IT.">
+<meta property="og:image" content="https://edge.hexa-ai.fr/img/hai-p200-4g.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="HAI-P200-4G — Monitorez vos machines et intervenez à distance">
+<meta name="twitter:description" content="Une seule box entre vos automates et votre bureau : collecte Modbus, OPC-UA et S7, historisation locale, courbes automatiques, alertes contextualisées et accès distant Tailscale intégré. Sans développement, sans licence, sans intervention IT.">
+<meta name="twitter:image" content="https://edge.hexa-ai.fr/img/hai-p200-4g.webp">
+<script>
+  /* Redirection de langue : un visiteur dont le navigateur n'est pas en francais
+     part sur la version anglaise. Le choix explicite du selecteur FR/EN, memorise
+     dans localStorage (ou force par ?lang=fr), a toujours la priorite. */
+  (function(){
+    try{
+      var store = window.localStorage;
+      if (store && store.getItem("hai-lang")) return;
+      if (/[?&]lang=fr(&|$)/.test(location.search)) {
+        if (store) store.setItem("hai-lang", "fr");
+        return;
+      }
+      var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+      if (!l || /^fr/i.test(l)) return;
+      location.replace("en/");
+    }catch(e){}
+  })();
+</script>
+<script>
+  /* Memorise la langue choisie via le selecteur FR/EN du header. */
+  document.addEventListener("click", function(e){
+    var a = e.target && e.target.closest ? e.target.closest("[data-hai-lang]") : null;
+    if (!a) return;
+    try { window.localStorage.setItem("hai-lang", a.getAttribute("data-hai-lang")); } catch(err){}
+  }, true);
+</script>
 
-        /* Animation Badge venant du bas (Effet Notification) */
-        @keyframes slideUpNotification {
-            0% { 
-                opacity: 0; 
-                transform: translateY(40px); /* Part de plus bas */
-            }
-            70% {
-                transform: translateY(-5px); /* Monte un peu trop haut (rebond) */
-            }
-            100% { 
-                opacity: 1; 
-                transform: translateY(0); /* Se stabilise */
-            }
-        }
-        
-        /* Classes à appliquer */
-        .animate-image-right {
-            opacity: 0;
-            animation: slideInRight 1s ease-out forwards;
-            animation-delay: 0.2s; /* Commence vite */
-        }
-
-        .animate-notification {
-            opacity: 0;
-            animation: slideUpNotification 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            animation-delay: 1.2s; /* Arrive APRES l'image pour attirer l'oeil */
-        }
-    </style>
+<script src="./support.js"></script>
 </head>
-<body class="bg-gray-900 text-gray-200 leading-relaxed">
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html { scrollbar-color: #00d4aa #0d1319; scrollbar-width: auto; }
+  ::-webkit-scrollbar { width: 15px; height: 15px; }
+  ::-webkit-scrollbar-track { background: #0d1319; }
+  ::-webkit-scrollbar-thumb { background: #00d4aa; border-radius: 999px; border: 2px solid #0d1319; }
+  ::-webkit-scrollbar-thumb:hover { background: #1ae5bb; }
+  ::-webkit-scrollbar-corner { background: #0d1319; }
+  body { margin: 0; background: #0a0f14; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: #00d4aa; text-decoration: none; }
+  a:hover { color: #1ae5bb; }
+  @keyframes haiAlarmGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(255,122,122,0); border-color: #2a3a47; } 45% { box-shadow: 0 0 0 7px rgba(255,122,122,.13); border-color: rgba(255,122,122,.6); } }
+  @keyframes haiRing { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-11deg); } 60% { transform: rotate(11deg); } }
+  @keyframes haiPulse { 0%,100% { opacity:.25; transform:scale(.85); } 50% { opacity:1; transform:scale(1.15); } }
+  details summary::-webkit-details-marker { display: none; }
+</style>
+<script>
+(function(){
+  if (window.__haiMailFallback) return;
+  window.__haiMailFallback = 1;
+  var T = {"title": "Nous écrire", "intro": "Choisissez comment envoyer votre message à", "app": "Ouvrir mon logiciel de mail", "appHint": "Outlook, Thunderbird, Mail…", "gmailHint": "Rédiger directement dans Gmail", "outlookHint": "Rédiger dans Outlook sur le web", "copy": "Copier l'adresse", "copied": "Adresse copiée ✓", "form": "Ou utiliser le formulaire →", "close": "Fermer"};
+  var doc = document;
 
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-sm border-b border-gray-800 shadow-md">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="index.html" class="transition-opacity hover:opacity-80">
-                <img src="img/Hexa-AI white.png" alt="Hexa-AI" class="h-8 w-auto">
-            </a>
-            
-            <ul class="hidden md:flex items-center space-x-8">
-                <li><a href="#defis" class="text-gray-300 hover:text-white transition-colors">Défis</a></li>
-                <li><a href="#solutions" class="text-gray-300 hover:text-white transition-colors">Fonctionnalités</a></li>
-                <li><a href="#specs" class="text-gray-300 hover:text-white transition-colors">Spécifications</a></li>
-                <li><a href="#contact" class="cta-button bg-blue-600 text-white text-sm font-semibold px-5 py-2 rounded-md shadow-lg hover:bg-blue-700">Commander</a></li>
-            </ul>
-        </div>
-    </nav>
+  var css = ""
+    + ".hai-mf-ov{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(5,8,11,.74);font-family:Inter,system-ui,sans-serif;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}"
+    + ".hai-mf-card{width:100%;max-width:430px;background:#11181f;border:1px solid #2a3a47;border-radius:14px;padding:24px;box-shadow:0 24px 60px rgba(0,0,0,.55);max-height:calc(100vh - 48px);overflow:auto}"
+    + ".hai-mf-h{margin:0;font-size:18px;font-weight:700;color:#e6edf3;letter-spacing:-.01em}"
+    + ".hai-mf-sub{margin:8px 0 20px;font-size:13.5px;line-height:1.55;color:#9aa8b3}"
+    + ".hai-mf-sub b{color:#00d4aa;font-weight:600}"
+    + ".hai-mf-opts{display:flex;flex-direction:column;gap:10px}"
+    + ".hai-mf-b{display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;padding:12px 14px;border-radius:9px;font-family:inherit;font-size:14px;font-weight:600;line-height:1.25;text-align:left;text-decoration:none;cursor:pointer;border:1px solid #2a3a47;background:#0d1319;color:#e6edf3;transition:border-color .15s,background .15s,transform .15s}"
+    + ".hai-mf-b:hover{border-color:#00d4aa;color:#00d4aa;transform:translateY(-1px)}"
+    + ".hai-mf-b span{font-size:12px;font-weight:400;color:#6b7884}"
+    + ".hai-mf-b:hover span{color:#9aa8b3}"
+    + ".hai-mf-b.p{background:#00d4aa;border-color:#00d4aa;color:#0a0f14;box-shadow:0 6px 20px rgba(0,212,170,.25)}"
+    + ".hai-mf-b.p:hover{background:#1ae5bb;border-color:#1ae5bb;color:#0a0f14}"
+    + ".hai-mf-b.p span{color:rgba(10,15,20,.7)}"
+    + ".hai-mf-b.p:hover span{color:rgba(10,15,20,.7)}"
+    + ".hai-mf-foot{display:flex;align-items:center;justify-content:flex-end;gap:16px;margin-top:18px;padding-top:16px;border-top:1px solid #1d2832;font-size:13px}"
+    + ".hai-mf-x{background:none;border:0;padding:0;font-family:inherit;font-size:13px;color:#6b7884;cursor:pointer}"
+    + ".hai-mf-x:hover{color:#e6edf3}";
 
-<header class="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28 bg-gray-900">
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="flex flex-col lg:flex-row items-center gap-12">
-                
-                <div class="lg:w-1/2">
-                    <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-blue-300 uppercase bg-blue-900/30 rounded-full border border-blue-800">
-                        Nouveau Produit
-                    </div>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                        Monitorez vos machines dès le premier jour.<br>
-                        <span class="text-blue-500">Sans complexité IT.</span>
-                    </h1>
-                    <p class="text-xl text-gray-400 mb-8 font-light">
-                        La première Gateway IoT industrielle qui combine la simplicité d'une solution propriétaire ("Boîte Noire") et la puissance illimitée de l'Open Source.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="https://calendar.app.google/kLXvjUkXtg4DYdHQ8" target="_blank" class="cta-button bg-blue-600 text-white text-lg font-bold px-8 py-4 rounded-lg shadow-lg hover:bg-blue-700 text-center">
-                            Demander une Démo
-                        </a>
-                        <a href="#specs" class="cta-button bg-transparent border border-gray-600 text-gray-300 text-lg font-semibold px-8 py-4 rounded-lg hover:bg-gray-800 hover:text-white text-center transition-colors">
-                            Fiche Technique
-                        </a>
-                    </div>
-                </div>
+  function style(){
+    if (doc.getElementById("hai-mf-css")) return;
+    var s = doc.createElement("style");
+    s.id = "hai-mf-css";
+    s.textContent = css;
+    (doc.head || doc.documentElement).appendChild(s);
+  }
 
-                <div class="lg:w-1/2 relative">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-purple-600 opacity-20 blur-3xl rounded-full"></div>
-                    
-                    <div class="relative rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur shadow-2xl overflow-hidden animate-image-right">
-                        <img src="img/hero-image-hai-p200-4g.png" alt="HAI-P200 et Dashboard" class="w-full h-auto">
-                    </div>
-                    
-                    <div class="absolute -bottom-10 -left-6 md:-left-12 bg-gray-800 border border-gray-700 text-white p-5 rounded-lg shadow-2xl hidden md:block animate-notification max-w-sm">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                                <div class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
-                            </div>
-                            
-                            <div>
-                                <p class="font-bold text-sm text-white mb-1">Stack Complète Pré-installée</p>
-                                <div class="text-xs text-gray-400 space-y-1">
-                                    <p class="flex items-center gap-2">
-                                        <span class="text-blue-400">●</span> Tailscale & Grafana
-                                    </p>
-                                    <p class="flex items-center gap-2">
-                                        <span class="text-orange-400">●</span> Node-RED & Ignition Edge™
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  function parse(href){
+    var raw = href.replace(/^mailto:/i, "").split("?");
+    var q = {}, parts = (raw[1] || "").split("&");
+    for (var i = 0; i < parts.length; i++){
+      if (!parts[i]) continue;
+      var kv = parts[i].split("=");
+      try { q[decodeURIComponent(kv[0]).toLowerCase()] = decodeURIComponent((kv[1] || "").replace(/\+/g, " ")); } catch(e){}
+    }
+    var to = raw[0];
+    try { to = decodeURIComponent(to); } catch(e){}
+    return { href: href, to: to, subject: q.subject || "", body: q.body || "" };
+  }
 
-                </div>
-            </div>
-        </div>
-    </header>
+  function make(tag, cls, txt){
+    var n = doc.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt != null) n.textContent = txt;
+    return n;
+  }
 
-    <div class="bg-gray-900 py-10 text-center px-4 border-b border-gray-800">
-        <p class="text-lg md:text-xl font-medium text-gray-400 max-w-3xl mx-auto">
-            Pourquoi les intégrateurs et exploitants changent-ils leurs modems standards pour le HAI-P200 ? <br>
-            <span class="text-white font-bold">La réponse tient en trois défis quotidiens...</span>
-        </p>
-        <div class="connector-line mt-8"></div>
+  function option(cls, label, hint){
+    var b = make("button", "hai-mf-b" + (cls ? " " + cls : ""));
+    b.type = "button";
+    b.appendChild(doc.createTextNode(label));
+    if (hint) b.appendChild(make("span", null, hint));
+    return b;
+  }
+
+  function copy(text){
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+    return new Promise(function(res, rej){
+      try {
+        var t = doc.createElement("textarea");
+        t.value = text;
+        t.setAttribute("style", "position:fixed;top:-1000px;opacity:0");
+        doc.body.appendChild(t);
+        t.select();
+        doc.execCommand("copy");
+        doc.body.removeChild(t);
+        res();
+      } catch(e){ rej(e); }
+    });
+  }
+
+  function open(d){
+    var prev = doc.activeElement;
+    var ov = make("div", "hai-mf-ov");
+    ov.setAttribute("role", "dialog");
+    ov.setAttribute("aria-modal", "true");
+    var card = make("div", "hai-mf-card");
+
+    var h = make("h3", "hai-mf-h", T.title);
+    var sub = make("p", "hai-mf-sub");
+    sub.appendChild(doc.createTextNode(T.intro + " "));
+    sub.appendChild(make("b", null, d.to));
+    card.appendChild(h);
+    card.appendChild(sub);
+
+    var opts = make("div", "hai-mf-opts");
+    var bApp = option("p", T.app, T.appHint);
+    var bGm  = option(null, "Gmail", T.gmailHint);
+    var bOl  = option(null, "Outlook / Microsoft 365", T.outlookHint);
+    var bCp  = option(null, T.copy, d.to);
+    opts.appendChild(bApp); opts.appendChild(bGm); opts.appendChild(bOl); opts.appendChild(bCp);
+    card.appendChild(opts);
+
+    var foot = make("div", "hai-mf-foot");
+    var x = make("button", "hai-mf-x", T.close);
+    x.type = "button";
+    foot.appendChild(x);
+    card.appendChild(foot);
+    ov.appendChild(card);
+
+    function close(){
+      doc.removeEventListener("keydown", key, true);
+      if (ov.parentNode) ov.parentNode.removeChild(ov);
+      if (prev && prev.focus) prev.focus();
+    }
+    function key(e){ if (e.key === "Escape"){ e.preventDefault(); close(); } }
+    function web(url){ var w = window.open(url, "_blank", "noopener"); if (w) close(); }
+
+    var e = encodeURIComponent;
+    bApp.addEventListener("click", function(){ window.location.href = d.href; setTimeout(close, 400); });
+    bGm.addEventListener("click", function(){
+      web("https://mail.google.com/mail/?view=cm&fs=1&to=" + e(d.to) + "&su=" + e(d.subject) + "&body=" + e(d.body));
+    });
+    bOl.addEventListener("click", function(){
+      web("https://outlook.office.com/mail/deeplink/compose?to=" + e(d.to) + "&subject=" + e(d.subject) + "&body=" + e(d.body));
+    });
+    bCp.addEventListener("click", function(){
+      copy(d.to).then(function(){
+        bCp.textContent = T.copied;
+        bCp.appendChild(make("span", null, d.to));
+      }, function(){});
+    });
+    x.addEventListener("click", close);
+    ov.addEventListener("click", function(ev){ if (ev.target === ov) close(); });
+    doc.addEventListener("keydown", key, true);
+
+    doc.body.appendChild(ov);
+    bApp.focus();
+  }
+
+  doc.addEventListener("click", function(ev){
+    if (ev.defaultPrevented || ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+    var t = ev.target;
+    var a = t && t.closest ? t.closest('a[href^="mailto:"], a[href^="MAILTO:"]') : null;
+    if (!a) return;
+    ev.preventDefault();
+    style();
+    open(parse(a.getAttribute("href")));
+  }, true);
+})();
+</script>
+</helmet>
+<div style="background:#0a0f14;color:#e6edf3;font-family:Inter,system-ui,sans-serif;line-height:1.55;font-size:16px;overflow-x:clip">
+
+  <nav style="position:sticky;top:0;z-index:50;min-height:64px;background:rgba(10,15,20,.88);backdrop-filter:blur(14px);border-bottom:1px solid #1d2832">
+    <div style="max-width:1180px;margin:0 auto;padding:10px 24px;min-height:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 20px">
+      <a href="https://www.hexa-ai.fr" style="display:flex;align-items:center;gap:10px"><img src="img/Hexa-AI dark.png" alt="Hexa-AI" style="height:26px;width:auto;display:block"><span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa;border-left:1px solid #2a3a47;padding-left:10px">Edge</span></a>
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px 16px">
+        <a href="#fonctions" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Fonctionnalités</a>
+        <a href="#protocoles" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Protocoles</a>
+        <a href="#telemaintenance" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Télémaintenance</a>
+        <a href="#astreinte" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Astreinte</a>
+        <a href="#specs" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Matériel</a>
+        <a href="https://hexa-ai.odoo.com/knowledge/article/65" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:1px solid #2a3a47;border-radius:8px;font-size:12.5px;font-weight:600;color:#e6edf3;line-height:1;white-space:nowrap" style-hover="border-color:#00d4aa;color:#00d4aa"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg>Documentation</a>
+        <span style="display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid #1d2832;border-radius:7px;background:#11181f">
+          <span style="padding:4px 8px;border-radius:5px;background:rgba(0,212,170,.14);color:#00d4aa;font-size:12px;font-weight:700">FR</span>
+          <a href="en/" data-hai-lang="en" style="padding:4px 8px;border-radius:5px;color:#6b7884;font-size:12px;font-weight:700" style-hover="color:#e6edf3">EN</a>
+        </span>
+        <a href="mailto:contact@hexa-ai.fr?subject=%5BHAI-P200-4G%5D%20Demande%20de%20chiffrage&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20recevoir%20un%20chiffrage%20pour%20la%20box%20HAI-P200-4G.%0D%0A%0D%0A-%20Societe%20%3A%0D%0A-%20Contact%20%2F%20telephone%20%3A%0D%0A-%20Nombre%20de%20box%20%3A%0D%0A-%20Automates%20et%20protocoles%20concernes%20%3A%0D%0A-%20Besoin%20principal%20%28monitoring%2C%20telemaintenance%2C%20astreinte%29%20%3A%0D%0A-%20Delai%20souhaite%20%3A%0D%0A%0D%0AMerci." style="display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:8px;background:#00d4aa;color:#0a0f14;font-size:12.5px;font-weight:600;line-height:1;white-space:nowrap;box-shadow:0 6px 20px rgba(0,212,170,.25)" style-hover="background:#1ae5bb;color:#0a0f14">Demander un chiffrage</a>
+      </div>
     </div>
+  </nav>
 
-    <section id="defis" class="py-20 bg-gray-800">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center text-white mb-12">
-                Pourquoi le monitoring est-il encore si complexe ?
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                
-                <div class="feature-card bg-gray-700 p-8 rounded-xl border border-gray-600">
-                    <div class="w-12 h-12 bg-red-900/30 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Le casse-tête VPN</h3>
-                    <p class="text-gray-400">
-                        Entre les abonnements prohibitifs et la complexité des VPN, l'équation est difficile. Vous cherchez la sécurité sans subir une <strong>double dépendance</strong> (Service Cloud + Matériel propriétaire).
-                    </p>
-                </div>
-
-                <div class="feature-card bg-gray-700 p-8 rounded-xl border border-gray-600">
-                    <div class="w-12 h-12 bg-yellow-900/30 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">L'illusion de l'IA</h3>
-                    <p class="text-gray-400">
-                        On parle d'IA, mais le terrain est plus cru : on peine déjà à collecter une donnée fiable. Vous perdez du temps à construire la "tuyauterie" au lieu de vous concentrer sur la <strong>valeur ajoutée</strong>.
-                    </p>
-                </div>
-
-                <div class="feature-card bg-gray-700 p-8 rounded-xl border border-gray-600">
-                    <div class="w-12 h-12 bg-blue-900/30 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">La barrière IT</h3>
-                    <p class="text-gray-400">
-                        La complexité technique (Linux, Réseau, Code) ne doit plus limiter vos ambitions. Ce projet ne devrait pas être abandonné car la marche informatique semble trop haute pour vos équipes.
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <div class="bg-gray-900 py-10 text-center px-4 border-t border-b border-gray-800">
-        <p class="text-lg md:text-xl font-medium text-gray-400 max-w-3xl mx-auto">
-            Nous avons conçu le HAI-P200 pour éliminer ces frictions.<br>
-            <span class="text-blue-500 font-bold">Voici comment nous transformons des jours de configuration en minutes d'installation.</span>
-        </p>
-        <div class="connector-line mt-8"></div>
+  <header style="position:relative;overflow:hidden;padding:96px 0 88px">
+    <div aria-hidden="true" style="position:absolute;inset:-10%;background-image:linear-gradient(rgba(0,212,170,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.06) 1px,transparent 1px);background-size:32px 32px;pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 25%,#0a0f14 75%);pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none">
+      <span style="position:absolute;left:12%;top:26%;width:6px;height:6px;border-radius:50%;background:#00d4aa;box-shadow:0 0 12px #00d4aa;animation:haiPulse 3.6s ease-in-out infinite"></span>
+      <span style="position:absolute;left:78%;top:18%;width:6px;height:6px;border-radius:50%;background:#00d4aa;box-shadow:0 0 12px #00d4aa;animation:haiPulse 3.6s ease-in-out .8s infinite"></span>
+      <span style="position:absolute;left:88%;top:72%;width:6px;height:6px;border-radius:50%;background:#00d4aa;box-shadow:0 0 12px #00d4aa;animation:haiPulse 3.6s ease-in-out 1.6s infinite"></span>
+      <span style="position:absolute;left:16%;top:78%;width:6px;height:6px;border-radius:50%;background:#00d4aa;box-shadow:0 0 12px #00d4aa;animation:haiPulse 3.6s ease-in-out 2.4s infinite"></span>
     </div>
-
-    <section id="solutions" class="py-20 bg-gray-900 overflow-hidden">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-16">
-                De la donnée brute à la valeur ajoutée.<br><span class="text-gray-500">Une suite logicielle unifiée.</span>
-            </h2>
-
-            <div class="flex flex-col md:flex-row items-center gap-12 mb-24">
-                <div class="md:w-1/2 order-2 md:order-1">
-                    <div class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-800">
-                        <img src="img/conf-centraliser-sans-coder-hai-p200-4g.png"  alt="Interface Configurateur No-Code" class="w-full opacity-90 hover:opacity-100 transition-opacity">
-                    </div>
-                </div>
-                <div class="md:w-1/2 order-1 md:order-2">
-                    <div class="inline-block bg-blue-900/50 text-blue-300 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-blue-800">ÉTAPE 1 : CONNECTEZ</div>
-                    <h3 class="text-3xl font-bold text-white mb-4">Centralisez sans coder.</h3>
-                    <p class="text-lg text-gray-400 mb-6">
-                        Fini les fichiers JSON. Notre <strong>Configurateur Graphique</strong> unifie vos protocoles (S7, Modbus, OPC-UA).
-                    </p>
-                    <ul class="space-y-3 text-gray-300">
-                        <li class="flex items-start">
-                            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span><strong>Simplicité :</strong> Déclarez vos équipements en quelques clics.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span><strong>Organisation :</strong> Catégorisez immédiatement (Alarmes, Mesures).</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="flex flex-col md:flex-row items-center gap-12 mb-24">
-                <div class="md:w-1/2">
-                    <div class="inline-block bg-purple-900/50 text-purple-300 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-purple-800">ÉTAPE 2 : VISUALISEZ</div>
-                    <h3 class="text-3xl font-bold text-white mb-4">Dashboards instantanés.</h3>
-                    <p class="text-lg text-gray-400 mb-6">
-                        Le HAI-P200 organise vos données. La stack pré-installée (Telegraf + SQLite + Grafana) génère les visualisations automatiquement.
-                    </p>
-                    <ul class="space-y-3 text-gray-300">
-                        <li class="flex items-start">
-                            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span><strong>Historisation locale :</strong> Données sécurisées sur SSD/eMMC.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span><strong>Zéro config :</strong> Les tableaux de bord s'adaptent dynamiquement.</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="md:w-1/2">
-                    <div class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-800">
-                        <img src="img/dashboard-hai-p200-4g.png"  alt="Dashboard Grafana Automatique" class="w-full opacity-90 hover:opacity-100 transition-opacity">
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2 order-2 md:order-1">
-                    <div class="relative rounded-xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-800">
-                        <img src="img/IgnitionEdge-Node-Red-hai-p200-4g.png"  alt="Ignition Edge et Node-RED" class="w-full opacity-90 hover:opacity-100 transition-opacity">
-                        <div class="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur text-xs text-center py-2 text-gray-300 border-t border-gray-700">
-                            Node-Red & Ignition Edge™ pré-installés
-                        </div>
-                    </div>
-                </div>
-                <div class="md:w-1/2 order-1 md:order-2">
-                    <div class="inline-block bg-yellow-900/50 text-yellow-300 text-xs font-bold px-3 py-1 rounded-full mb-4 border border-yellow-800">ÉTAPE 3 : VALORISEZ</div>
-                    <h3 class="text-3xl font-bold text-white mb-4">Passez du monitoring au SCADA.</h3>
-                    <p class="text-lg text-gray-400 mb-6">
-                        Pour les besoins avancés, le HAI-P200 est une véritable Edge Gateway multi-compétence. Deux moteurs puissants sont pré-conteneurisés :
-                    </p>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-start p-4 rounded-lg bg-gray-800 border border-gray-700 hover:border-orange-500 transition-colors group">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="text-white font-bold group-hover:text-orange-400 transition-colors">Ignition Edge™ (Inductive Automation)</h4>
-                                <p class="text-sm text-gray-400 mt-1">Déjà installé et conteneurisé. Saisissez simplement votre licence pour déverrouiller l'application complète : créez vos <strong>écrans de supervision locale</strong> et synchronisez-les avec un serveur central.</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start p-4 rounded-lg bg-gray-800 border border-gray-700 hover:border-red-500 transition-colors group">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                            </div>
-                            <div class="ml-4">
-                                <h4 class="text-white font-bold group-hover:text-red-400 transition-colors">Node-RED</h4>
-                                <p class="text-sm text-gray-400 mt-1">Pour l'agilité : connectez des API, formatez des données ou générez des rapports PDF automatisés via IA.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+    <div style="position:relative;max-width:1180px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center">
+      <div>
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">HAI-P200-4G · Télémaintenance &amp; monitoring</span>
+        <h1 style="margin:16px 0 0;font-size:clamp(34px,4.6vw,56px);font-weight:800;letter-spacing:-.02em;line-height:1.05;color:#e6edf3;text-wrap:pretty">Monitorez vos machines et intervenez à distance. <span style="color:#00d4aa">Dès le premier jour.</span></h1>
+        <p style="margin:24px 0 0;font-size:18px;color:#9aa8b3;max-width:560px;text-wrap:pretty">Une seule box entre vos automates et votre bureau : collecte multi-protocoles, historisation locale, courbes automatiques, alertes qui remontent déjà le contexte, et accès distant Tailscale intégré. Sans développement, sans licence, sans intervention IT.</p>
+        <div style="margin-top:32px;display:flex;gap:16px;flex-wrap:wrap">
+          <a href="mailto:contact@hexa-ai.fr?subject=%5BHAI-P200-4G%5D%20Demande%20de%20chiffrage&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20recevoir%20un%20chiffrage%20pour%20la%20box%20HAI-P200-4G.%0D%0A%0D%0A-%20Societe%20%3A%0D%0A-%20Contact%20%2F%20telephone%20%3A%0D%0A-%20Nombre%20de%20box%20%3A%0D%0A-%20Automates%20et%20protocoles%20concernes%20%3A%0D%0A-%20Besoin%20principal%20%28monitoring%2C%20telemaintenance%2C%20astreinte%29%20%3A%0D%0A-%20Delai%20souhaite%20%3A%0D%0A%0D%0AMerci." style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:8px;background:#00d4aa;color:#0a0f14;font-size:15px;font-weight:600;line-height:1;box-shadow:0 6px 20px rgba(0,212,170,.25)" style-hover="background:#1ae5bb;color:#0a0f14;transform:translateY(-2px)">Demander un chiffrage →</a>
+          <a href="#fonctions" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:8px;border:1px solid #00d4aa;color:#00d4aa;font-size:15px;font-weight:600;line-height:1" style-hover="background:rgba(0,212,170,.12);transform:translateY(-2px)">Voir les fonctionnalités</a>
         </div>
-    </section>
-
-    <section id="specs" class="py-20 bg-gray-800 border-t border-gray-700">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-12">
-                Conçu pour durer. Partout.
-            </h2>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-                
-                <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-900 h-full lg:min-h-[600px]">
-                    <img src="img/hai-p200-4g.jpeg" alt="Installation réelle du HAI-P200 en armoire électrique sur Rail-DIN" class="w-full h-full object-cover">
-                    
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900 to-transparent p-6 pt-12">
-                        <p class="text-white font-semibold">Application de télémaintenance sur machine d'assemblage</p>
-                        <p class="text-sm text-gray-300">Intégration sur Rail-DIN au cœur des équipements.</p>
-                    </div>
-                </div>
-
-                <div class="space-y-6">
-                    
-                    <div class="bg-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg hover:border-blue-500 transition-colors">
-                        <div class="flex items-center mb-4 text-blue-500">
-                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
-                            <h3 class="font-bold text-xl text-white">Cœur & Puissance</h3>
-                        </div>
-                        <ul class="space-y-3 text-gray-400">
-                            <li class="flex justify-between border-b border-gray-800 pb-2">
-                                <span>Module :</span> 
-                                <strong class="text-gray-200 text-right">
-                                    Raspberry Pi CM4<br>
-                                    <span class="text-xs font-normal text-blue-400">Quad-Core @ 1.5GHz • 4Go RAM</span>
-                                </strong>
-                            </li>
-                            <li class="flex justify-between border-b border-gray-800 pb-2">
-                                <span>Stockage :</span> 
-                                <strong class="text-gray-200 text-right">eMMC 32Go (Soudé)<br>+ SD Indus. 128Go (Option)</strong>
-                            </li>
-                            <li class="flex justify-between pt-2">
-                                <span>Système :</span> 
-                                <strong class="text-gray-200 text-right">Debian 12 (Bookworm)<br><span class="text-xs font-normal text-blue-400">+ Interface Web Admin</span></strong>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg hover:border-blue-500 transition-colors">
-                        <div class="flex items-center mb-4 text-blue-500">
-                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path></svg>
-                            <h3 class="font-bold text-xl text-white">Connectivité</h3>
-                        </div>
-                        <ul class="space-y-3 text-gray-400">
-                            <li class="flex justify-between border-b border-gray-800 pb-2">
-                                <span>Réseau Filaire :</span> 
-                                <strong class="text-gray-200">Dual LAN (IT/OT)</strong>
-                            </li>
-                            <li class="flex justify-between border-b border-gray-800 pb-2">
-                                <span>Ports Série :</span> 
-                                <strong class="text-gray-200 text-right">2x RS232 + 2x RS485<br><span class="text-xs font-normal text-gray-500">(Bornier industriel)</span></strong>
-                            </li>
-                            <li class="flex justify-between border-b border-gray-800 pb-2">
-                                <span>Sans-Fil :</span> 
-                                <strong class="text-gray-200">Modem 4G LTE + GPS</strong>
-                            </li>
-                            <li class="flex justify-between pt-2">
-                                <span>Accès Distant :</span> 
-                                <strong class="text-gray-200">Tailscale intégré (VPN)</strong>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg hover:border-blue-500 transition-colors">
-                        <div class="flex items-center mb-4 text-blue-500">
-                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                            <h3 class="font-bold text-xl text-white">Robustesse</h3>
-                        </div>
-                        <ul class="space-y-3 text-gray-400">
-                            <li class="flex justify-between border-b border-gray-800 pb-2"><span>Format :</span> <strong class="text-gray-200">Boîtier Alu + Rail DIN</strong></li>
-                            <li class="flex justify-between border-b border-gray-800 pb-2"><span>Alimentation :</span> <strong class="text-gray-200">9-36V DC + Protection</strong></li>
-                            <li class="flex justify-between pt-2"><span>Fiabilité :</span> <strong class="text-gray-200">RTC & Watchdog Hardware</strong></li>
-                        </ul>
-                    </div>
-
-                </div>
-                
-            </div>
+        <div style="margin-top:40px;display:flex;gap:12px;flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#11181f;border:1px solid #2a3a47;border-radius:999px;font-size:13px;font-weight:500">Installation en <strong style="color:#00d4aa;font-weight:600">moins d'une heure</strong></span>
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#11181f;border:1px solid #2a3a47;border-radius:999px;font-size:13px;font-weight:500"><strong style="color:#00d4aa;font-weight:600">Zéro ligne de code</strong></span>
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#11181f;border:1px solid #2a3a47;border-radius:999px;font-size:13px;font-weight:500">Collecte <strong style="color:#00d4aa;font-weight:600">en lecture seule</strong></span>
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#11181f;border:1px solid #2a3a47;border-radius:999px;font-size:13px;font-weight:500">4G + <strong style="color:#00d4aa;font-weight:600">Tailscale</strong> intégré</span>
         </div>
-    </section>
+      </div>
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;padding:24px;border:1px solid #1d2832;border-radius:12px;background:radial-gradient(circle at 30% 30%,rgba(0,212,170,.12),transparent 60%),#14202a">
+        <img src="img/Box_Monitoring_HAI_P200.webp" alt="Passerelle HAI-P200-4G" style="max-width:92%;height:auto;display:block;filter:drop-shadow(0 14px 24px rgba(0,0,0,.45))">
+      </div>
+    </div>
+  </header>
 
-    <section id="contact" class="py-24 bg-gray-900">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
-                    Prêt à connecter vos installations ?
-                </h2>
-                <p class="text-xl text-gray-400">
-                    Besoin d'une unité de test pour demain ou d'une flotte pour l'année prochaine ?
-                </p>
-            </div>
+  <section style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:760px;margin:0 auto 56px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Pourquoi changer de modem</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Trois frictions qui bloquent vos projets de supervision</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47;transform:translateY(-3px)">
+          <div style="width:40px;height:2px;background:#00d4aa;margin-bottom:24px"></div>
+          <h3 style="margin:0 0 12px;font-size:19px;font-weight:700">Le casse-tête VPN</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">Les VPN industriels classiques exigent des règles de pare-feu, une IP publique, un serveur à maintenir, et vous enferment chez un fabricant.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47;transform:translateY(-3px)">
+          <div style="width:40px;height:2px;background:#00d4aa;margin-bottom:24px"></div>
+          <h3 style="margin:0 0 12px;font-size:19px;font-weight:700">L'alarme sans contexte</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">Un défaut remonte, et il faut reconstituer ce qui s'est passé avant : appels, exports, tableur. Le temps passe en enquête, pas en réparation.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47;transform:translateY(-3px)">
+          <div style="width:40px;height:2px;background:#00d4aa;margin-bottom:24px"></div>
+          <h3 style="margin:0 0 12px;font-size:19px;font-weight:700">La barrière IT</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">Scripts sur mesure, fichiers de configuration à éditer à la main, dashboards à construire : le monitoring ne doit plus exiger des compétences de développeur.</p>
+        </article>
+      </div>
+    </div>
+  </section>
 
-            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"> -->
-            <div class="grid grid-cols-1 md:grid-cols-1 gap-8 max-w-4xl mx-auto">
-                
-                <!-- <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl flex flex-col items-center text-center hover:border-blue-500 transition-colors">
-                    <div class="bg-gray-700 p-4 rounded-full mb-6 text-blue-400">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Démarrer maintenant (PoC)</h3>
-                    <p class="text-gray-400 mb-8 flex-grow">
-                        Commandez votre unité standard HAI-P200 (eMMC 32Go).<br><strong class="text-blue-400">Expédition 24/48h.</strong>
-                    </p>
-                    <a href="#" class="w-full cta-button bg-gray-700 text-white text-lg font-bold px-8 py-4 rounded-lg hover:bg-gray-600 border border-gray-600">
-                        Commander un échantillon
-                    </a>
-                </div> -->
-                <div class="bg-blue-600 p-8 rounded-2xl shadow-xl flex flex-col items-center text-center text-white transform md:-translate-y-4">
-                    <div class="bg-blue-500 p-4 rounded-full mb-6">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2">Projet & Déploiement</h3>
-                    <p class="text-blue-100 mb-8 flex-grow">
-                        Décrivez simplement votre besoin.<br>
-                        Nous vous envoyons un <strong>devis incluant le PC et les options adaptées</strong> (Antennes, Stockage, Alimentation...).
-                    </p>
-                    <a href="https://tally.so/r/wgDXVO" target="_blank" class="w-full cta-button bg-white text-blue-600 text-lg font-bold px-8 py-4 rounded-lg hover:bg-gray-100 shadow-lg">
-                        Demander un chiffrage
-                    </a>
+  <section id="fonctions" style="border-top:1px solid #1d2832;background:#0d1319;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:760px;margin:0 auto 20px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Connectez · Visualisez · Notifiez</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Trois étapes, et votre parc est sous surveillance</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">Des jours de configuration transformés en minutes d'installation.</p>
+      </div>
+      <p style="text-align:center;margin:0 0 40px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6b7884">Survolez ou cliquez une bande pour voir l'interface réelle</p>
+
+      <div style="display:flex;flex-direction:column;gap:24px">
+
+        <div data-reveal="1" style="perspective:2400px;height:520px" onMouseEnter="{{ in0 }}" onMouseLeave="{{ out0 }}" onClick="{{ tog0 }}">
+          <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.22,.61,.36,1);transform:{{ t0 }}">
+            <div style="position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:36px 40px;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+                <div style="width:48px;height:48px;flex:none;border-radius:12px;background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center;color:#00d4aa">
+                  <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M9 2v6M15 2v6M7 8h10v4a5 5 0 0 1-5 5 5 5 0 0 1-5-5V8zM12 17v5"></path></svg>
                 </div>
-
+                <div>
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6b7884">Étape 01</span>
+                  <h3 style="margin:2px 0 0;font-size:24px;font-weight:700">Connectez sans coder</h3>
+                </div>
+              </div>
+              <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#9aa8b3;max-width:860px">Le configurateur graphique <strong style="color:#e6edf3;font-weight:600">Data-Plug</strong> déclare vos équipements et vos variables en quelques clics : adresse, slave ID, cadence, type de donnée, byte order, unité, échelle. Aucun fichier à éditer, aucun script.</p>
+              <ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;max-width:980px">
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Modbus TCP, Modbus série (RS232/RS485), S7, OPC-UA avec navigateur de nodes intégré</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Catégorisation immédiate : mesure, état, compteur, alarme</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Collecte en lecture seule</strong> : la box n'écrit jamais dans vos automates</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Import / export CSV : 500 points au tableur plutôt que 500 clics</span></li>
+              </ul>
             </div>
+            <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#14202a;border:1px solid #2a3a47;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="padding:14px 18px;border-bottom:1px solid #1d2832;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa;font-weight:600">Data-Plug — configuration des entrées</div>
+              <div style="flex:1;overflow:hidden;background:#fff"><img src="img/ui-dataplug.png" alt="Interface Data-Plug : configuration d'une entrée Modbus" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div>
+            </div>
+          </div>
         </div>
-    </section>
 
-    <footer class="py-16 bg-gray-900 border-t border-gray-800">
-        <div class="container mx-auto px-6 text-center text-gray-500">
-            <p class="text-lg font-semibold text-gray-300 mb-2">Hexa-AI</p>
-            <p class="mb-6">Notre ADN : Expertise des plateformes ouvertes.</p>
-            
-            <a href="https://hexa-ai.notion.site/Documentation-HAI-P200-4G-1f151d7dad2f80ebb3fbef6c4cda62ea" target="_blank" class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                Espace Documentation & Support Technique
-            </a>
-            
-            <div class="mt-10 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-8">
-                <div class="text-sm text-gray-400 text-center md:text-left">
-                    <p><strong>Hexa-AI</strong></p>
-                    <p>Bureau B2, Bâtiment Terraditta</p>
-                    <p>287 rue Barthélémy Thimonnier, 69530 BRIGNAIS</p>
-                    <p class="mt-2"><a href="mailto:contact@hexa-ai.fr" class="hover:text-white">contact@hexa-ai.fr</a></p>
+        <div data-reveal="1" style="perspective:2400px;height:520px" onMouseEnter="{{ in1 }}" onMouseLeave="{{ out1 }}" onClick="{{ tog1 }}">
+          <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.22,.61,.36,1);transform:{{ t1 }}">
+            <div style="position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:36px 40px;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+                <div style="width:48px;height:48px;flex:none;border-radius:12px;background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center;color:#00d4aa">
+                  <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M3 3v18h18M7 14c2-6 4 4 6-2s3 3 5-4"></path></svg>
                 </div>
-                <div class="flex items-center gap-4">
-                    <a href="https://www.linkedin.com/company/hexaai" target="_blank" class="text-gray-400 hover:text-white transition-colors">
-                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                    </a>
+                <div>
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6b7884">Étape 02</span>
+                  <h3 style="margin:2px 0 0;font-size:24px;font-weight:700">Visualisez instantanément</h3>
                 </div>
+              </div>
+              <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#9aa8b3;max-width:860px">Aucun dashboard à construire : le <strong style="color:#e6edf3;font-weight:600">Data-Explorer</strong> s'adapte aux variables déclarées et choisit la bonne représentation tout seul.</p>
+              <ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;max-width:980px">
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Mode Live temps réel, ou historique avec comparaison de deux périodes</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Courbes lissées pour les mesures, escaliers pour les états, barres pour les compteurs</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Lots de production : un clic ouvre l'historique verrouillé sur la plage du lot</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Position GPS / NMEA tracée sur carte, accès invité en lecture pour votre client</span></li>
+              </ul>
             </div>
-            <p class="mt-8 text-sm">&copy; 2025 Hexa-AI. Tous droits réservés.</p>
+            <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#14202a;border:1px solid #2a3a47;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="padding:14px 18px;border-bottom:1px solid #1d2832;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa;font-weight:600">Data-Explorer — mesures, états, compteurs</div>
+              <div style="flex:1;overflow:hidden;background:#fff"><img src="img/ui-dataexplorer.png" alt="Data-Explorer : courbe de mesure, graphique en escaliers et compteur" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div>
+            </div>
+          </div>
         </div>
-    </footer>
 
-    <a href="#" id="to-top-button" class="fixed bottom-8 right-8 z-50 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-opacity duration-300 opacity-0 pointer-events-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
-    </a>
+        <div data-reveal="1" style="perspective:2400px;height:520px" onMouseEnter="{{ in2 }}" onMouseLeave="{{ out2 }}" onClick="{{ tog2 }}">
+          <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.22,.61,.36,1);transform:{{ t2 }}">
+            <div style="position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:36px 40px;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+                <div style="width:48px;height:48px;flex:none;border-radius:12px;background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center;color:#00d4aa">
+                  <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M10.3 21a2 2 0 0 0 3.4 0"></path></svg>
+                </div>
+                <div>
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6b7884">Étape 03</span>
+                  <h3 style="margin:2px 0 0;font-size:24px;font-weight:700">Notifiez, escaladez, acquittez</h3>
+                </div>
+              </div>
+              <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#9aa8b3;max-width:900px">Alarmes et rapports empruntent les mêmes canaux. Pour une alarme, vous choisissez : envoi direct, ou chaîne d'escalade que vous composez — vos niveaux, vos relances, vos destinataires.</p>
+              <div data-schema="1" style="display:grid;grid-template-columns:170px 46px minmax(0,1fr) 46px 178px;grid-template-rows:auto auto;gap:10px 0;align-items:stretch">
+                <div style="grid-column:1;grid-row:1"><div style="border:1px solid rgba(255,122,122,.45);background:rgba(255,122,122,.07);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;height:100%"><span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff7a7a">Alarme</span><p style="margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#9aa8b3">Front montant, avec anti-rebond</p></div></div>
+                <div style="grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:10px">
+                  <div style="flex:1;display:flex;align-items:center;padding:0 4px"><span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span></div>
+                  <div style="flex:1;display:flex;align-items:center;padding:0 4px"><span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span></div>
+                </div>
+                <div style="grid-column:3;grid-row:1;display:flex;flex-direction:column;gap:10px">
+                  <div style="border:1px solid #2a3a47;background:#0d1319;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;flex:1"><span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa">Notification directe</span><p style="margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#9aa8b3">Un envoi immédiat aux destinataires de l'alarme</p></div>
+                  <div style="border:1px solid #2a3a47;background:#0d1319;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;flex:1"><span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa">Ou escalade, que vous composez</span><p style="margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#9aa8b3">Vos niveaux, vos relances, vos destinataires — jusqu'à l'appel en dernier recours</p></div>
+                </div>
+                <div style="grid-column:4;grid-row:1;display:flex;flex-direction:column;gap:10px">
+                  <div style="flex:1;display:flex;align-items:center;padding:0 4px"><span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span></div>
+                  <div style="flex:1;display:flex;align-items:center;padding:0 4px"><span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span></div>
+                </div>
+                <div style="grid-column:5;grid-row:1 / span 2;border:1px solid rgba(0,212,170,.4);background:rgba(0,212,170,.06);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;justify-content:center">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa">Canaux de sortie</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px"><span style="padding:4px 9px;border-radius:6px;background:#14202a;font-size:12px;color:#e6edf3;white-space:nowrap">✉️ E-mail</span><span style="padding:4px 9px;border-radius:6px;background:#14202a;font-size:12px;color:#e6edf3;white-space:nowrap">💬 SMS ✓</span><span style="padding:4px 9px;border-radius:6px;background:#14202a;font-size:12px;color:#e6edf3;white-space:nowrap">📞 Appel ✓</span><span style="padding:4px 9px;border-radius:6px;background:#14202a;font-size:12px;color:#e6edf3;white-space:nowrap">🔗 Webhook</span></div>
+                  <span style="font-size:11px;line-height:1.4;color:#6b7884">✓ Acquitter par SMS (« OK ») ou en tapant 1 pendant l'appel arrête l'escalade.</span>
+                </div>
+                <div style="grid-column:1;grid-row:2"><div style="border:1px solid #2a3a47;background:#0d1319;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;height:100%"><span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa">Rapport</span><p style="margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#9aa8b3">Quotidien, hebdomadaire ou à la fermeture d'un lot</p></div></div>
+                <div style="grid-column:2 / span 3;grid-row:2;position:relative;display:flex;align-items:center;padding:0 4px">
+                  <span style="position:absolute;left:0;right:0;top:calc(50% - 20px);text-align:center;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#6b7884">directement</span>
+                  <span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span>
+                </div>
+              </div>
+            </div>
+            <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#14202a;border:1px solid #2a3a47;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="padding:14px 18px;border-bottom:1px solid #1d2832;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa;font-weight:600">L'e-mail d'alerte reçu</div>
+              <div style="flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 400px">
+                <div style="padding:28px 32px;display:flex;flex-direction:column;gap:16px;justify-content:center">
+                  <p style="margin:0;font-size:16px;font-weight:700;color:#e6edf3">Ce que contient l'e-mail</p>
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px">
+                    <li style="display:flex;gap:10px;font-size:14px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span>Le nom de l'alarme, son niveau, l'horodatage et le contrôleur concerné</span></li>
+                    <li style="display:flex;gap:10px;font-size:14px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span>Les mesures qui se sont le plus écartées de leur comportement, avec leur valeur au déclenchement</span></li>
+                    <li style="display:flex;gap:10px;font-size:14px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span>Les courbes des 3 premières et l'état de l'alarme, en image dans le mail</span></li>
+                  </ul>
+                </div>
+                <div style="overflow:hidden;background:#fff;border-left:1px solid #2a3a47"><img src="img/ui-rca-email-top.png" alt="E-mail d'alerte avec les variables les plus impactées" style="width:100%;height:auto;display:block"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <script>
-        const toTopButton = document.getElementById('to-top-button');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                toTopButton.classList.remove('opacity-0', 'pointer-events-none');
-            } else {
-                toTopButton.classList.add('opacity-0', 'pointer-events-none');
-            }
+      </div>
+    </div>
+  </section>
+
+  <section id="protocoles" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:800px;margin:0 auto 48px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Connectivité industrielle</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Les protocoles d'acquisition</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">Six entrées configurables depuis la même interface web, sans passerelle intermédiaire — et toujours en lecture seule.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px">
+
+        <div data-reveal="1" style="grid-column:span 3;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="img/logos/modbus.webp" alt="Modbus" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">Modbus TCP</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Production</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Holding &amp; input registers, coils, discrete inputs. 17 types de données, byte order 16/32/64 bits, échelle et unité par variable.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 3;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="img/logos/modbus-rtu.png" alt="Modbus RTU" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">Modbus RTU</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Production</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">RS232 / RS485 sur les 4 ports du bornier, via passerelle RTU→TCP intégrée. 1200 à 115200 bauds, 8N1 par défaut.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 3;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="img/logos/siemens-s7.png" alt="Siemens S7" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">S7 · ISO-on-TCP</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Production</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Lecture des blocs de données sur S7-300/400/1200/1500. Sur 1200/1500 : PUT/GET autorisé et accès DB non optimisé requis.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 3;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="img/logos/opc-ua.png" alt="OPC UA" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">OPC-UA</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Production</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Navigateur de nodes intégré, anonyme / mot de passe / certificat, génération du certificat client depuis l'interface.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 4;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="img/logos/bacnet.png" alt="BACnet" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">BACnet/IP</span>
+              <span hidden="{{ hideBeta }}" style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#e8b04b;font-weight:600;overflow-wrap:anywhere">Beta</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Découverte Who-Is et balayage réseau, lecture des objets analogiques, binaires et multi-états (present-value).</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 4;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="img/logos/nmea.png" alt="NMEA" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">NMEA 0183</span>
+              <span hidden="{{ hideBeta }}" style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#e8b04b;font-weight:600;overflow-wrap:anywhere">Beta</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">TCP client, TCP serveur ou UDP, filtre par talker. Mode écoute : le flux s'affiche, un clic transforme un champ en variable.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 4;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="img/logos/mqtt.jpg" alt="MQTT" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">MQTT interne</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Via Node-RED</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Tout ce qu'un flux Node-RED sait lire devient une variable historisée : API externes, capteurs exotiques, formats maison.</p>
+        </div>
+
+              </div>
+
+      <div style="margin-top:32px">
+        <div style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:22px 24px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#6b7884">Vers vos systèmes</span>
+          <p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:#9aa8b3"><strong style="color:#e6edf3;font-weight:600">MQTT sortant</strong> et <strong style="color:#e6edf3;font-weight:600">webhook HTTPS JSON</strong> avec jeton : vos données repartent vers votre SaaS, votre supervision ou votre ERP, avec rejeu des messages échoués.</p>
+        </div>
+      </div>
+      <div style="margin-top:32px;padding:32px;background:#0d1319;border:1px solid #1d2832;border-radius:12px">
+        <p style="margin:0;text-align:center;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#6b7884">Automates &amp; plateformes raccordés</p>
+        <div style="margin:22px auto 0;max-width:940px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 18px">
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Siemens</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Schneider Electric</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Wago</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Beckhoff</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Rockwell / Allen-Bradley</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Omron</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Mitsubishi</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">ABB</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Phoenix Contact</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Delta</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Johnson Controls</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Isma Controlli</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">CODESYS</span>
+          <span style="font-size:15.5px;font-weight:700;color:#00d4aa">et bien d'autres</span>
+        </div>
+        <p style="margin:22px auto 0;max-width:760px;text-align:center;font-size:14px;line-height:1.6;color:#9aa8b3">Rien dans la box n'est spécifique à un constructeur : <strong style="color:#e6edf3;font-weight:600">tout équipement qui parle Modbus, S7, OPC-UA, BACnet/IP ou NMEA 0183 se raccorde</strong>. Et nous programmons ces plateformes au quotidien — c'est notre métier depuis le premier jour.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="telemaintenance" style="border-top:1px solid #1d2832;background:#11181f;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:40px">
+      <div data-reveal="1" style="max-width:900px">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Télémaintenance</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Vos automates, depuis votre bureau. Sans ticket IT.</h2>
+        <p style="margin:20px 0 0;font-size:17px;color:#e6edf3;font-weight:500">Le HAI-P200-4G embarque Tailscale, un VPN moderne basé sur WireGuard : une connexion sortante chiffrée, aucune IP publique, aucune règle entrante à faire ouvrir.</p>
+        <ul style="margin:24px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:16px 48px">
+          <li style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Mise en service par clé d'authentification</strong> collée dans l'interface web : deux minutes, pas de serveur VPN à installer.</span></li>
+          <li style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Sous-réseau annoncé en CIDR</strong> : tout le réseau local de la machine devient joignable, même les équipements qui ignorent tout des VPN.</span></li>
+          <li style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Ou port par port</strong>, si la DSI refuse qu'on route son LAN : redirection ciblée d'un port vers un équipement précis.</span></li>
+          <li style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Diagnostic avec vos outils</strong> : CODESYS, TIA Portal, navigateur, VNC — en adressant l'équipement par son IP.</span></li>
+        </ul>
+        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+          <span style="padding:7px 13px;border-radius:999px;background:rgba(0,212,170,.12);color:#00d4aa;font-size:12.5px;font-weight:600">WireGuard</span>
+          <span style="padding:7px 13px;border-radius:999px;background:rgba(0,212,170,.12);color:#00d4aa;font-size:12.5px;font-weight:600">Aucun port entrant</span>
+          <span style="padding:7px 13px;border-radius:999px;background:rgba(0,212,170,.12);color:#00d4aa;font-size:12.5px;font-weight:600">Fonctionne derrière la 4G</span>
+          <span style="padding:7px 13px;border-radius:999px;background:rgba(0,212,170,.12);color:#00d4aa;font-size:12.5px;font-weight:600">Aucun routage entre interfaces par défaut</span>
+        </div>
+      </div>
+      <figure data-reveal="1" style="margin:0 auto;width:100%;max-width:880px;border:1px solid #2a3a47;border-radius:12px;overflow:hidden;background:#fff">
+        <img src="img/schema-tailscale.png" alt="Schéma : PC utilisateur, tunnel Tailscale par Internet, passerelle HAI-P200-4G, automate sur le réseau local" style="width:100%;height:auto;display:block">
+        <figcaption style="padding:12px 16px;background:#14202a;border-top:1px solid #2a3a47;font-size:12.5px;color:#9aa8b3">Tunnel chiffré du poste de l'automaticien jusqu'à l'automate, sans IP publique ni ouverture de port. L'équipement s'adresse par son IP : la découverte automatique par diffusion (PROFINET DCP, scan CODESYS) ne traverse pas le tunnel.</figcaption>
+      </figure>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Et même sans VPN</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">La box interroge périodiquement votre serveur en sortant : vous répondez par une commande. Mise à jour, redémarrage, instantané système — à travers la 4G, sans un seul port entrant.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Lien Internet redondant</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Bascule automatique Ethernet → Wi-Fi → 4G, sondée en permanence. Le site reste joignable même quand le réseau de l'usine tombe.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Mise en service au téléphone</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Activez le hotspot Wi-Fi et son portail captif : on configure la box depuis un smartphone, QR code à l'appui, sans PC ni câble réseau dans l'armoire.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Mises à jour maîtrisées</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Dépôt logiciel signé, choix de la version, retour arrière possible. Vous décidez quand une machine change de version.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="monitoring" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div style="max-width:800px;margin:0 auto 56px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Monitoring</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">De la variable automate au rapport PDF</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">Toute la chaîne est embarquée dans la box. Pas de cloud obligatoire, pas d'abonnement de plateforme.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:28px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#00d4aa">01 — ACQUISITION</span>
+          <h3 style="margin:14px 0 10px;font-size:18px;font-weight:700">On lit vos équipements</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Interrogation cyclique de chaque équipement, cadence réglable (5 s par défaut). Unité, description et catégorie portées par la variable.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:28px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#00d4aa">02 — HISTORISATION</span>
+          <h3 style="margin:14px 0 10px;font-size:18px;font-weight:700">On enregistre en base locale</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Base embarquée sur la box, partitionnée par mois, rétention 30 jours par défaut. L'historique reste consultable sans Internet ; la micro-SD industrielle étend la capacité.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:28px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#00d4aa">03 — LOTS</span>
+          <h3 style="margin:14px 0 10px;font-size:18px;font-weight:700">On découpe par lot de production</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Vous désignez la variable qui identifie le lot : ses transitions ouvrent et ferment les lots automatiquement. Un clic rouvre l'historique sur la plage exacte du lot.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:28px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#00d4aa">04 — RAPPORTS</span>
+          <h3 style="margin:14px 0 10px;font-size:18px;font-weight:700">On envoie le bilan</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Quotidien, hebdomadaire, ou <strong style="color:#e6edf3;font-weight:600">à la fermeture d'un lot</strong> : l'e-mail reprend le bilan — statistiques de vos variables favorites, courbes des 5 premières, CSV en option — et le même rapport est généré en PDF, archivé et consultable depuis l'interface.</p>
+        </article>
+      </div>
+      <div style="margin-top:20px;display:flex;align-items:center;gap:14px;padding:18px 22px;background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.25);border-radius:12px">
+        <span style="font-size:20px;line-height:1">📄</span>
+        <p style="margin:0;font-size:14.5px;line-height:1.6;color:#e6edf3">Le lot se ferme, le rapport part tout seul. Pour un atelier de production, c'est la traçabilité obtenue sans que personne n'ait à y penser.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="rca" style="border-top:1px solid #1d2832;background:#0d1319;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:40px">
+      <div data-reveal="1" style="max-width:900px">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Aide au diagnostic</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Quand l'alarme arrive, vous savez déjà où regarder.</h2>
+        <p style="margin:20px 0 0;font-size:16.5px;line-height:1.65;color:#9aa8b3">À chaque alarme, la box compare les <strong style="color:#e6edf3;font-weight:600">30 dernières minutes</strong> de chaque mesure à son comportement habituel, et joint à la notification les cinq qui s'en écartent le plus — courbes comprises pour les trois premières. L'exploitant ouvre le mail et voit où regarder, au lieu de reconstituer le contexte après coup.</p>
+        <p style="margin:16px 0 0;font-size:14.5px;line-height:1.65;color:#6b7884">Honnêtement : c'est une analyse statistique d'écart (z-score), pas un oracle. Elle désigne des corrélations temporelles — c'est le temps de diagnostic qu'elle fait gagner, pas la cause qu'elle affirme.</p>
+      </div>
+      <figure data-reveal="1" style="margin:0 auto;width:100%;max-width:660px">
+        <div style="border-radius:12px;overflow:hidden"><img src="img/ui-rca-modal.png" alt="Fenêtre d'analyse de 30 minutes : variables classées par impact et courbes associées" style="width:100%;height:auto;display:block"></div>
+        <figcaption style="padding:12px 2px 0;font-size:12.5px;color:#9aa8b3">Vue intégrée à l'interface : impact par variable, valeur au moment de l'alarme, et courbes sur la fenêtre analysée.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="astreinte" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:800px;margin:0 auto 48px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Astreinte</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Une passerelle qui vous appelle à 3 h du matin</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">La plupart des passerelles envoient un mail et considèrent leur travail terminé.</p>
+      </div>
+      <div data-reveal="1" data-alarmflow="1" style="margin:0 0 24px;padding:28px 30px;background:#11181f;border:1px solid #1d2832;border-radius:12px">
+        <p style="margin:0 0 22px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6b7884">Ce qui se passe quand une alarme tombe</p>
+        <div style="display:grid;grid-template-columns:206px minmax(0,1fr) 236px;grid-template-rows:auto auto auto;gap:12px 0;align-items:center">
+          <div data-node="1" style="grid-column:1;grid-row:1 / span 3;border:1px solid #2a3a47;background:#0d1319;border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;align-self:stretch;justify-content:center">
+            <span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff7a7a">Alarme</span>
+            <span style="font-size:15px;font-weight:700;color:#e6edf3">NiveauHaut</span>
+            <span style="font-size:12px;color:#9aa8b3">HAI-P200-4G · Ligne 2</span>
+          </div>
+        <div style="grid-column:2;grid-row:1;position:relative;height:24px;display:flex;align-items:center">
+          <span data-track="0" style="position:absolute;left:14px;right:14px;height:2px;background:rgba(0,212,170,.4);transform:scaleX(0);transform-origin:left center"></span>
+          <span data-dot="0" style="position:absolute;left:14px;width:8px;height:8px;border-radius:50%;background:#00d4aa;box-shadow:0 0 10px rgba(0,212,170,.9);opacity:0"></span>
+        </div>
+        <div data-chip="0" style="grid-column:3;grid-row:1;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #2a3a47;border-radius:10px;background:#0d1319;opacity:.3">
+          <span style="font-size:17px;line-height:1">✉️</span>
+          <span><span style="display:block;font-size:13px;font-weight:600;color:#e6edf3">E-mail</span><span style="display:block;font-size:11.5px;line-height:1.35;color:#9aa8b3">avec les courbes</span></span>
+        </div>
+        <div style="grid-column:2;grid-row:2;position:relative;height:24px;display:flex;align-items:center">
+          <span data-track="1" style="position:absolute;left:14px;right:14px;height:2px;background:rgba(0,212,170,.4);transform:scaleX(0);transform-origin:left center"></span>
+          <span data-dot="1" style="position:absolute;left:14px;width:8px;height:8px;border-radius:50%;background:#00d4aa;box-shadow:0 0 10px rgba(0,212,170,.9);opacity:0"></span>
+        </div>
+        <div data-chip="1" style="grid-column:3;grid-row:2;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #2a3a47;border-radius:10px;background:#0d1319;opacity:.3">
+          <span style="font-size:17px;line-height:1">💬</span>
+          <span><span style="display:block;font-size:13px;font-weight:600;color:#e6edf3">SMS</span><span style="display:block;font-size:11.5px;line-height:1.35;color:#9aa8b3">répondez « OK »</span></span>
+        </div>
+        <div style="grid-column:2;grid-row:3;position:relative;height:24px;display:flex;align-items:center">
+          <span data-track="2" style="position:absolute;left:14px;right:14px;height:2px;background:rgba(0,212,170,.4);transform:scaleX(0);transform-origin:left center"></span>
+          <span data-dot="2" style="position:absolute;left:14px;width:8px;height:8px;border-radius:50%;background:#00d4aa;box-shadow:0 0 10px rgba(0,212,170,.9);opacity:0"></span>
+        </div>
+        <div data-chip="2" style="grid-column:3;grid-row:3;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #2a3a47;border-radius:10px;background:#0d1319;opacity:.3">
+          <span data-ring="1" style="font-size:17px;line-height:1">📞</span>
+          <span><span style="display:block;font-size:13px;font-weight:600;color:#e6edf3">Appel vocal</span><span style="display:block;font-size:11.5px;line-height:1.35;color:#9aa8b3">tapez 1 pour acquitter</span></span>
+        </div>
+        </div>
+        <div style="position:relative;height:24px;margin-top:22px">
+          <p data-status="0" style="position:absolute;inset:0;margin:0;font-size:13.5px;font-weight:500;color:#ff7a7a">Alarme déclenchée — notification immédiate au niveau 1.</p>
+          <p data-status="1" style="position:absolute;inset:0;margin:0;font-size:13.5px;font-weight:500;color:#e8b04b;opacity:0">Aucun acquittement — passage au niveau suivant.</p>
+          <p data-status="2" style="position:absolute;inset:0;margin:0;font-size:13.5px;font-weight:500;color:#00d4aa;opacity:0">Acquitté pendant l'appel — la chaîne s'arrête.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:30px">
+          <h3 style="margin:0 0 10px;font-size:18px;font-weight:700">Appel vocal automatique</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">En dernier recours, la box appelle et énonce l'alarme en synthèse vocale. On acquitte en tapant 1 pendant l'appel. Une SIM voix est requise.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:30px">
+          <h3 style="margin:0 0 10px;font-size:18px;font-weight:700">Escalade par niveaux</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Niveau 1, relance, niveau 2 : les canaux se choisissent par personne et par niveau. La chaîne s'arrête dès le premier acquittement — SMS « OK », touche du clavier, ou interface.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:30px">
+          <h3 style="margin:0 0 10px;font-size:18px;font-weight:700">Anti-flood assumé</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Durée minimale d'activation, temporisation entre deux envois, plafond par fenêtre de temps. Une alarme qui bat ne réveille pas l'astreinte vingt fois.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="ecosysteme" style="border-top:1px solid #1d2832;background:#11181f;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:800px;margin:0 auto 48px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Écosystème</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">La simplicité par défaut n'interdit pas la puissance</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">Un catalogue d'applications s'installe en un clic sur la box, avec sauvegarde et restauration des volumes.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:900px;margin:0 auto 32px">
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">Node-RED</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">Grafana</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">Ignition Edge</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">PostgreSQL</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">pgAdmin</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">Passerelle Modbus RTU → TCP</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Accès invité</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Ouvrez à votre client final quelques pages en lecture — et un lien vers son Grafana ou son Node-RED — sans jamais lui donner l'administration.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Flux sur mesure</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Node-RED reste l'échappatoire universelle : API externes, formats propriétaires, calculs métier. Ce qu'il produit revient dans l'historisation comme n'importe quelle variable.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Interface accessible</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Contraste, taille de texte, navigation clavier, réduction des animations : l'interface passe les exigences d'accessibilité des marchés publics.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="specs" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:760px;margin:0 auto 56px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Matériel</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Conçu pour durer. En armoire, partout.</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1.25fr;gap:48px;align-items:center">
+        <div style="border:1px solid #1d2832;border-radius:12px;background:radial-gradient(circle at 40% 30%,rgba(0,212,170,.1),transparent 60%),#14202a;padding:28px;display:flex;align-items:center;justify-content:center">
+          <img src="img/hai-p200-4g.webp" alt="HAI-P200-4G, boîtier aluminium sur rail DIN avec antenne 4G" style="max-width:100%;height:auto;display:block;filter:drop-shadow(0 14px 24px rgba(0,0,0,.45))">
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px">
+          <div data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:24px">
+            <h3 style="margin:0 0 18px;font-size:15px;font-weight:700;color:#00d4aa">Cœur &amp; puissance</h3>
+            <dl style="margin:0;display:flex;flex-direction:column;gap:14px">
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Module</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Raspberry Pi CM4<br><span style="font-weight:400;color:#9aa8b3">Quad-core · 4 Go RAM</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Stockage</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">eMMC 32 Go soudée<br><span style="font-weight:400;color:#9aa8b3">+ micro-SD industrielle 128 Go en option — l'historisation bascule dessus automatiquement</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Système</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Debian 12 · HAI-OS<br><span style="font-weight:400;color:#9aa8b3">Interface web d'administration</span></dd></div>
+            </dl>
+          </div>
+          <div data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:24px">
+            <h3 style="margin:0 0 18px;font-size:15px;font-weight:700;color:#00d4aa">Connectivité</h3>
+            <dl style="margin:0;display:flex;flex-direction:column;gap:14px">
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Réseau filaire</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Deux ports Ethernet<br><span style="font-weight:400;color:#9aa8b3">Configurables séparément, aucun routage entre eux par défaut</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Ports série</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">4 ports sur bornier<br><span style="font-weight:400;color:#9aa8b3">2× RS232 + 2× RS485</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Sans-fil &amp; distant</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">4G LTE + Wi-Fi<br><span style="font-weight:400;color:#9aa8b3">Tailscale intégré, bascule automatique de lien</span></dd></div>
+            </dl>
+          </div>
+          <div data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:24px">
+            <h3 style="margin:0 0 18px;font-size:15px;font-weight:700;color:#00d4aa">Robustesse</h3>
+            <dl style="margin:0;display:flex;flex-direction:column;gap:14px">
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Format</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Boîtier aluminium<br><span style="font-weight:400;color:#9aa8b3">Montage rail DIN</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Alimentation</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Bornier industriel<br><span style="font-weight:400;color:#9aa8b3">Plage large DC</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Fiabilité</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Horloge temps réel<br><span style="font-weight:400;color:#9aa8b3">Surveillance et relance automatique des services</span></dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cas" style="border-top:1px solid #1d2832;background:#11181f;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:760px;margin:0 auto 56px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Cas d'usage</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Qui met un HAI-P200 dans son armoire</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px">
+        <article data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa">Constructeurs de machines · OEM</span>
+          <h3 style="margin:12px 0 10px;font-size:19px;font-weight:700">Superviser le parc installé sans exploser le coût de SAV</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">La même box sur chaque machine livrée : accès distant immédiat, historique disponible quand le client appelle, et une offre de service récurrente à vendre.</p>
+        </article>
+        <article data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa">Ateliers de production</span>
+          <h3 style="margin:12px 0 10px;font-size:19px;font-weight:700">Un rapport par lot, sans y penser</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">Le lot se ferme, le PDF part avec ses statistiques et ses courbes. La traçabilité s'obtient par configuration, pas par développement.</p>
+        </article>
+        <article data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa">GTB / CVC — avec Scorp-IO</span>
+          <h3 style="margin:12px 0 10px;font-size:19px;font-weight:700">La partie terrain d'une plateforme SaaS</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">Centrales de traitement d'air instrumentées (température, CO₂, hygrométrie), données remontées proprement vers la plateforme de l'éditeur.</p>
+        </article>
+        <article data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa">Maritime &amp; fluvial</span>
+          <h3 style="margin:12px 0 10px;font-size:19px;font-weight:700">Des sites mobiles, connectés quand le réseau revient</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">NMEA 0183 sur TCP ou UDP, position tracée sur carte, historisation locale qui absorbe les zones blanches : l'edge avant le cloud.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:860px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="text-align:center;margin-bottom:48px">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Questions fréquentes</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Ce qu'on nous demande avant de commander</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">La box peut-elle écrire dans mon automate&nbsp;?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">Non, et c'est volontaire : la collecte est <strong style="color:#e6edf3;font-weight:600">strictement en lecture</strong>. Aucune commande ne part vers vos équipements, ce qui simplifie beaucoup la discussion avec votre service sécurité.</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Faut-il modifier le programme automate&nbsp;?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">Dans la grande majorité des cas, non : on lit les variables déjà exposées (registres Modbus, blocs de données S7, nodes OPC-UA). Sur S7-1200/1500, il faut simplement autoriser PUT/GET et désactiver l'accès optimisé sur les blocs lus.</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Mes données partent-elles dans le cloud&nbsp;?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">Non. Acquisition, historisation et visualisation tournent dans la box. Vous décidez ensuite ce que vous republiez, et vers qui, en MQTT ou par webhook.</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Que se passe-t-il pendant une coupure réseau&nbsp;?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">La collecte continue : l'historisation est locale et ne dépend pas d'Internet. Les données non transmises sont rejouées à la reconnexion, dans la limite de la rétention configurée (30 jours par défaut).</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Notre service informatique va-t-il devoir ouvrir des ports&nbsp;?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">Non. Tout part en connexion sortante chiffrée : ni IP publique, ni redirection de port, ni règle entrante. Avec la 4G, la box peut même rester entièrement hors du réseau de l'entreprise.</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Comment sont déclenchées les alarmes&nbsp;?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">Sur <strong style="color:#e6edf3;font-weight:600">changement d'état</strong> d'une variable booléenne déclarée comme alarme — c'est votre automate qui garde la main sur les seuils. La box y ajoute l'anti-rebond, l'escalade, l'acquittement et le contexte de diagnostic.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="border-top:1px solid #1d2832;background:#0d1319;padding:104px 0">
+    <div style="max-width:760px;margin:0 auto;padding:0 24px;text-align:center">
+      <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Passer à l'action</span>
+      <h2 style="margin:12px 0 0;font-size:clamp(30px,4.5vw,44px);font-weight:800;line-height:1.12;letter-spacing:-.01em">Prêt à connecter vos installations&nbsp;?</h2>
+      <p style="margin:18px 0 0;font-size:18px;color:#e6edf3">Une unité de test pour la semaine prochaine, ou une flotte pour l'année&nbsp;? Décrivez votre besoin, on revient avec un chiffrage complet — box, antennes, stockage, alimentation et options adaptées.</p>
+      <p style="margin:14px 0 0;font-size:15px;color:#9aa8b3">Pas de commercial : vous parlez directement à l'ingénieur qui suivra votre projet.</p>
+      <div style="margin-top:36px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <a href="mailto:contact@hexa-ai.fr?subject=%5BHAI-P200-4G%5D%20Demande%20de%20chiffrage&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20recevoir%20un%20chiffrage%20pour%20la%20box%20HAI-P200-4G.%0D%0A%0D%0A-%20Societe%20%3A%0D%0A-%20Contact%20%2F%20telephone%20%3A%0D%0A-%20Nombre%20de%20box%20%3A%0D%0A-%20Automates%20et%20protocoles%20concernes%20%3A%0D%0A-%20Besoin%20principal%20%28monitoring%2C%20telemaintenance%2C%20astreinte%29%20%3A%0D%0A-%20Delai%20souhaite%20%3A%0D%0A%0D%0AMerci." style="display:inline-flex;align-items:center;gap:8px;padding:16px 26px;border-radius:8px;background:#00d4aa;color:#0a0f14;font-size:16px;font-weight:600;line-height:1;box-shadow:0 6px 20px rgba(0,212,170,.25)" style-hover="background:#1ae5bb;color:#0a0f14;transform:translateY(-2px)">Demander un chiffrage →</a>
+        <a href="https://hexa-ai.odoo.com/knowledge/article/65" style="display:inline-flex;align-items:center;gap:8px;padding:16px 26px;border-radius:8px;border:1px solid #2a3a47;color:#e6edf3;font-size:16px;font-weight:600;line-height:1" style-hover="border-color:#00d4aa;color:#00d4aa">Lire la documentation</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid #1d2832;padding:56px 0 32px;font-size:13.5px">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:40px;border-bottom:1px solid #1d2832">
+        <div>
+          <img src="img/Hexa-AI dark.png" alt="Hexa-AI" style="height:26px;width:auto;display:block;margin-bottom:16px">
+          <p style="margin:0;color:#9aa8b3;line-height:1.6;max-width:340px">Spécialiste de l'interconnexion IT/OT. Nous bâtissons les passerelles entre vos installations industrielles et votre système d'information.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#6b7884">Produit</p>
+          <a href="#fonctions" style="color:#9aa8b3" style-hover="color:#00d4aa">Fonctionnalités</a>
+          <a href="#protocoles" style="color:#9aa8b3" style-hover="color:#00d4aa">Protocoles</a>
+          <a href="#specs" style="color:#9aa8b3" style-hover="color:#00d4aa">Matériel</a>
+          <a href="https://hexa-ai.odoo.com/knowledge/article/65" style="color:#9aa8b3" style-hover="color:#00d4aa">Documentation</a>
+          <a href="securite.html" style="color:#9aa8b3" style-hover="color:#00d4aa">Signaler une vulnérabilité</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#6b7884">Contact</p>
+          <a href="mailto:contact@hexa-ai.fr" style="color:#9aa8b3" style-hover="color:#00d4aa">contact@hexa-ai.fr</a>
+          <a href="tel:+33666740458" style="color:#9aa8b3" style-hover="color:#00d4aa">+33 6 66 74 04 58</a>
+          <span style="color:#6b7884;line-height:1.6">6 rue Jean Marie Chevalier<br>69390 Vourles, France</span>
+        </div>
+      </div>
+      <div style="margin-top:24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12.5px">
+        <p style="margin:0;color:#6b7884">© 2026 Hexa-AI. Tous droits réservés.</p>
+        <div style="display:flex;gap:20px">
+          <a href="https://www.hexa-ai.fr" style="color:#9aa8b3" style-hover="color:#00d4aa">hexa-ai.fr</a>
+          <a href="https://codesys.hexa-ai.fr" style="color:#9aa8b3" style-hover="color:#00d4aa">codesys.hexa-ai.fr</a>
+          <a href="https://www.linkedin.com/company/hexaai" style="color:#9aa8b3" style-hover="color:#00d4aa">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;flipTrigger&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;survol&quot;,&quot;clic&quot;],&quot;default&quot;:&quot;survol&quot;,&quot;tsType&quot;:&quot;'survol' | 'clic'&quot;,&quot;section&quot;:&quot;Cartes fonctionnalités&quot;},&quot;showBeta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Protocoles&quot;}}">
+class Component extends DCLogic {
+  state = { flipped: [false, false, false] };
+
+  componentDidMount() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    this._t = setTimeout(() => {
+      const ease = 'cubic-bezier(.22,.61,.36,1)';
+      const els = Array.from(document.querySelectorAll('[data-reveal]'));
+      els.forEach(el => {
+        if (el.dataset.revealReady) return;
+        el.dataset.revealReady = '1';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(18px)';
+        el.style.transition = 'opacity .6s ' + ease + ', transform .6s ' + ease;
+      });
+      this.io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const el = e.target;
+          const sibs = el.parentElement ? Array.from(el.parentElement.children).filter(c => c.hasAttribute('data-reveal')) : [];
+          const idx = Math.max(0, sibs.indexOf(el));
+          el.style.transitionDelay = Math.min(idx * 80, 320) + 'ms';
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+          this.io.unobserve(el);
         });
-    </script>
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      els.forEach(el => this.io.observe(el));
+
+      const grid = document.querySelector('[data-schema]');
+      if (grid && !grid.dataset.animReady) {
+        grid.dataset.animReady = '1';
+        const kids = Array.from(grid.children);
+        const isArrow = i => i === 1 || i === 3 || i === 6;
+        kids.forEach((k, i) => {
+          k.style.opacity = '0';
+          k.style.transform = isArrow(i) ? 'scaleX(.04)' : 'translateY(10px)';
+          if (isArrow(i)) k.style.transformOrigin = 'left center';
+          k.style.transition = 'opacity .4s ease, transform .55s ' + ease;
+        });
+        this.io2 = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            [0, 5, 1, 2, 3, 6, 4].forEach((ki, step) => {
+              const k = kids[ki];
+              if (!k) return;
+              setTimeout(() => { k.style.opacity = '1'; k.style.transform = 'none'; }, step * 170);
+            });
+            this.io2.unobserve(e.target);
+          });
+        }, { threshold: 0.3 });
+        this.io2.observe(grid);
+      }
+
+      this.alarmFlow();
+    }, 80);
+  }
+
+  alarmFlow() {
+    const flow = document.querySelector('[data-alarmflow]');
+    if (!flow || flow.dataset.animReady) return;
+    flow.dataset.animReady = '1';
+    const node = flow.querySelector('[data-node]');
+    const tracks = Array.from(flow.querySelectorAll('[data-track]'));
+    const dots = Array.from(flow.querySelectorAll('[data-dot]'));
+    const chips = Array.from(flow.querySelectorAll('[data-chip]'));
+    const stats = Array.from(flow.querySelectorAll('[data-status]'));
+    const ring = flow.querySelector('[data-ring]');
+    this._timers = [];
+    const at = (ms, fn) => this._timers.push(setTimeout(fn, ms));
+
+    const reset = () => {
+      node.style.animation = 'none';
+      node.style.borderColor = '#2a3a47';
+      tracks.forEach(t => { t.style.transition = 'none'; t.style.transform = 'scaleX(0)'; });
+      dots.forEach(d => { d.style.transition = 'none'; d.style.opacity = '0'; d.style.left = '14px'; });
+      chips.forEach(c => { c.style.transition = 'opacity .35s ease, border-color .35s ease, transform .35s ease'; c.style.opacity = '.3'; c.style.borderColor = '#2a3a47'; c.style.transform = 'none'; });
+      stats.forEach((p, i) => { p.style.transition = 'opacity .35s ease'; p.style.opacity = i === 0 ? '1' : '0'; });
+      if (ring) ring.style.animation = 'none';
+      void flow.offsetWidth;
+    };
+
+    const send = (i, t0) => {
+      at(t0, () => {
+        tracks[i].style.transition = 'transform .55s cubic-bezier(.22,.61,.36,1)';
+        tracks[i].style.transform = 'scaleX(1)';
+        dots[i].style.transition = 'left .55s cubic-bezier(.4,0,.2,1), opacity .2s ease';
+        dots[i].style.opacity = '1';
+        dots[i].style.left = 'calc(100% - 22px)';
+      });
+      at(t0 + 560, () => {
+        dots[i].style.opacity = '0';
+        chips[i].style.opacity = '1';
+        chips[i].style.borderColor = 'rgba(0,212,170,.55)';
+        chips[i].style.transform = 'translateX(3px)';
+      });
+      at(t0 + 900, () => { chips[i].style.transform = 'none'; });
+    };
+
+    const run = () => {
+      reset();
+      at(120, () => { node.style.animation = 'haiAlarmGlow 1.3s ease-in-out 3'; });
+      send(0, 700);
+      send(1, 1500);
+      at(3000, () => { stats[0].style.opacity = '0'; stats[1].style.opacity = '1'; });
+      send(2, 3700);
+      at(4300, () => { if (ring) ring.style.animation = 'haiRing .5s ease-in-out 4'; });
+      at(6300, () => {
+        stats[1].style.opacity = '0';
+        stats[2].style.opacity = '1';
+        node.style.animation = 'none';
+        node.style.borderColor = 'rgba(0,212,170,.45)';
+        chips.forEach((c, i) => { if (i < 2) c.style.opacity = '.45'; });
+      });
+    };
+
+    let running = false;
+    this.io3 = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !running) {
+          running = true;
+          run();
+          this._loop = setInterval(run, 9600);
+        } else if (!e.isIntersecting && running) {
+          running = false;
+          clearInterval(this._loop);
+          this._timers.forEach(clearTimeout);
+          this._timers = [];
+        }
+      });
+    }, { threshold: 0.35 });
+    this.io3.observe(flow);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._loop);
+    if (this._timers) this._timers.forEach(clearTimeout);
+    if (this.io3) this.io3.disconnect();
+    clearTimeout(this._t);
+    if (this.io) this.io.disconnect();
+    if (this.io2) this.io2.disconnect();
+  }
+
+  set(i, v) {
+    this.setState(s => {
+      const f = s.flipped.slice();
+      f[i] = v;
+      return { flipped: f };
+    });
+  }
+
+  renderVals() {
+    const hover = (this.props.flipTrigger ?? 'survol') === 'survol';
+    const t = i => (this.state.flipped[i] ? 'rotateY(180deg)' : 'rotateY(0deg)');
+    const enter = i => (hover ? () => this.set(i, true) : undefined);
+    const leave = i => (hover ? () => this.set(i, false) : undefined);
+    const tog = i => () => this.set(i, !this.state.flipped[i]);
+    return {
+      t0: t(0), t1: t(1), t2: t(2),
+      in0: enter(0), in1: enter(1), in2: enter(2),
+      out0: leave(0), out1: leave(1), out2: leave(2),
+      tog0: tog(0), tog1: tog(1), tog2: tog(2),
+      hideBeta: !(this.props.showBeta ?? true),
+    };
+  }
+}
+
+</script>
 </body>
 </html>

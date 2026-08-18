@@ -1,0 +1,10 @@
+.superpowers/
+
+# Artefacts de l'outil de design (non utilisés par le site publié)
+.thumbnail
+doc-page.js
+image-slot.js
+uploads/
+
+# Config locale de prévisualisation
+.claude/

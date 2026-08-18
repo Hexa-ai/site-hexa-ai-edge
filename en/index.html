@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAI-P200-4G — Remote maintenance and monitoring for your machines | Hexa-AI Edge</title>
+<meta name="description" content="One box between your PLCs and your desk: Modbus, OPC-UA and S7 acquisition, local historisation, automatic charts, alerts that arrive with their context and built-in Tailscale remote access. No development, no licence, no IT ticket.">
+<meta name="theme-color" content="#0a0f14">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="canonical" href="https://edge.hexa-ai.fr/en/">
+<link rel="alternate" hreflang="fr" href="https://edge.hexa-ai.fr/">
+<link rel="alternate" hreflang="en" href="https://edge.hexa-ai.fr/en/">
+<link rel="alternate" hreflang="x-default" href="https://edge.hexa-ai.fr/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hexa-AI Edge">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:url" content="https://edge.hexa-ai.fr/en/">
+<meta property="og:title" content="HAI-P200-4G — Monitor your machines and intervene remotely">
+<meta property="og:description" content="One box between your PLCs and your desk: Modbus, OPC-UA and S7 acquisition, local historisation, automatic charts, alerts that arrive with their context and built-in Tailscale remote access. No development, no licence, no IT ticket.">
+<meta property="og:image" content="https://edge.hexa-ai.fr/img/hai-p200-4g.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="HAI-P200-4G — Monitor your machines and intervene remotely">
+<meta name="twitter:description" content="One box between your PLCs and your desk: Modbus, OPC-UA and S7 acquisition, local historisation, automatic charts, alerts that arrive with their context and built-in Tailscale remote access. No development, no licence, no IT ticket.">
+<meta name="twitter:image" content="https://edge.hexa-ai.fr/img/hai-p200-4g.webp">
+<script>
+  /* Memorise la langue choisie via le selecteur FR/EN du header. */
+  document.addEventListener("click", function(e){
+    var a = e.target && e.target.closest ? e.target.closest("[data-hai-lang]") : null;
+    if (!a) return;
+    try { window.localStorage.setItem("hai-lang", a.getAttribute("data-hai-lang")); } catch(err){}
+  }, true);
+</script>
+
+<script src="../support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html { scrollbar-color: #00d4aa #0d1319; scrollbar-width: auto; }
+  ::-webkit-scrollbar { width: 15px; height: 15px; }
+  ::-webkit-scrollbar-track { background: #0d1319; }
+  ::-webkit-scrollbar-thumb { background: #00d4aa; border-radius: 999px; border: 2px solid #0d1319; }
+  ::-webkit-scrollbar-thumb:hover { background: #1ae5bb; }
+  ::-webkit-scrollbar-corner { background: #0d1319; }
+  body { margin: 0; background: #0a0f14; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: #00d4aa; text-decoration: none; }
+  a:hover { color: #1ae5bb; }
+  @keyframes haiAlarmGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(255,122,122,0); border-color: #2a3a47; } 45% { box-shadow: 0 0 0 7px rgba(255,122,122,.13); border-color: rgba(255,122,122,.6); } }
+  @keyframes haiRing { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-11deg); } 60% { transform: rotate(11deg); } }
+  @keyframes haiPulse { 0%,100% { opacity:.25; transform:scale(.85); } 50% { opacity:1; transform:scale(1.15); } }
+  details summary::-webkit-details-marker { display: none; }
+</style>
+<script>
+(function(){
+  if (window.__haiMailFallback) return;
+  window.__haiMailFallback = 1;
+  var T = {"title": "Write to us", "intro": "Choose how to send your message to", "app": "Open my mail app", "appHint": "Outlook, Thunderbird, Mail…", "gmailHint": "Compose directly in Gmail", "outlookHint": "Compose in Outlook on the web", "copy": "Copy the address", "copied": "Address copied ✓", "form": "Or use the contact form →", "close": "Close"};
+  var doc = document;
+
+  var css = ""
+    + ".hai-mf-ov{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(5,8,11,.74);font-family:Inter,system-ui,sans-serif;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}"
+    + ".hai-mf-card{width:100%;max-width:430px;background:#11181f;border:1px solid #2a3a47;border-radius:14px;padding:24px;box-shadow:0 24px 60px rgba(0,0,0,.55);max-height:calc(100vh - 48px);overflow:auto}"
+    + ".hai-mf-h{margin:0;font-size:18px;font-weight:700;color:#e6edf3;letter-spacing:-.01em}"
+    + ".hai-mf-sub{margin:8px 0 20px;font-size:13.5px;line-height:1.55;color:#9aa8b3}"
+    + ".hai-mf-sub b{color:#00d4aa;font-weight:600}"
+    + ".hai-mf-opts{display:flex;flex-direction:column;gap:10px}"
+    + ".hai-mf-b{display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;padding:12px 14px;border-radius:9px;font-family:inherit;font-size:14px;font-weight:600;line-height:1.25;text-align:left;text-decoration:none;cursor:pointer;border:1px solid #2a3a47;background:#0d1319;color:#e6edf3;transition:border-color .15s,background .15s,transform .15s}"
+    + ".hai-mf-b:hover{border-color:#00d4aa;color:#00d4aa;transform:translateY(-1px)}"
+    + ".hai-mf-b span{font-size:12px;font-weight:400;color:#6b7884}"
+    + ".hai-mf-b:hover span{color:#9aa8b3}"
+    + ".hai-mf-b.p{background:#00d4aa;border-color:#00d4aa;color:#0a0f14;box-shadow:0 6px 20px rgba(0,212,170,.25)}"
+    + ".hai-mf-b.p:hover{background:#1ae5bb;border-color:#1ae5bb;color:#0a0f14}"
+    + ".hai-mf-b.p span{color:rgba(10,15,20,.7)}"
+    + ".hai-mf-b.p:hover span{color:rgba(10,15,20,.7)}"
+    + ".hai-mf-foot{display:flex;align-items:center;justify-content:flex-end;gap:16px;margin-top:18px;padding-top:16px;border-top:1px solid #1d2832;font-size:13px}"
+    + ".hai-mf-x{background:none;border:0;padding:0;font-family:inherit;font-size:13px;color:#6b7884;cursor:pointer}"
+    + ".hai-mf-x:hover{color:#e6edf3}";
+
+  function style(){
+    if (doc.getElementById("hai-mf-css")) return;
+    var s = doc.createElement("style");
+    s.id = "hai-mf-css";
+    s.textContent = css;
+    (doc.head || doc.documentElement).appendChild(s);
+  }
+
+  function parse(href){
+    var raw = href.replace(/^mailto:/i, "").split("?");
+    var q = {}, parts = (raw[1] || "").split("&");
+    for (var i = 0; i < parts.length; i++){
+      if (!parts[i]) continue;
+      var kv = parts[i].split("=");
+      try { q[decodeURIComponent(kv[0]).toLowerCase()] = decodeURIComponent((kv[1] || "").replace(/\+/g, " ")); } catch(e){}
+    }
+    var to = raw[0];
+    try { to = decodeURIComponent(to); } catch(e){}
+    return { href: href, to: to, subject: q.subject || "", body: q.body || "" };
+  }
+
+  function make(tag, cls, txt){
+    var n = doc.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt != null) n.textContent = txt;
+    return n;
+  }
+
+  function option(cls, label, hint){
+    var b = make("button", "hai-mf-b" + (cls ? " " + cls : ""));
+    b.type = "button";
+    b.appendChild(doc.createTextNode(label));
+    if (hint) b.appendChild(make("span", null, hint));
+    return b;
+  }
+
+  function copy(text){
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+    return new Promise(function(res, rej){
+      try {
+        var t = doc.createElement("textarea");
+        t.value = text;
+        t.setAttribute("style", "position:fixed;top:-1000px;opacity:0");
+        doc.body.appendChild(t);
+        t.select();
+        doc.execCommand("copy");
+        doc.body.removeChild(t);
+        res();
+      } catch(e){ rej(e); }
+    });
+  }
+
+  function open(d){
+    var prev = doc.activeElement;
+    var ov = make("div", "hai-mf-ov");
+    ov.setAttribute("role", "dialog");
+    ov.setAttribute("aria-modal", "true");
+    var card = make("div", "hai-mf-card");
+
+    var h = make("h3", "hai-mf-h", T.title);
+    var sub = make("p", "hai-mf-sub");
+    sub.appendChild(doc.createTextNode(T.intro + " "));
+    sub.appendChild(make("b", null, d.to));
+    card.appendChild(h);
+    card.appendChild(sub);
+
+    var opts = make("div", "hai-mf-opts");
+    var bApp = option("p", T.app, T.appHint);
+    var bGm  = option(null, "Gmail", T.gmailHint);
+    var bOl  = option(null, "Outlook / Microsoft 365", T.outlookHint);
+    var bCp  = option(null, T.copy, d.to);
+    opts.appendChild(bApp); opts.appendChild(bGm); opts.appendChild(bOl); opts.appendChild(bCp);
+    card.appendChild(opts);
+
+    var foot = make("div", "hai-mf-foot");
+    var x = make("button", "hai-mf-x", T.close);
+    x.type = "button";
+    foot.appendChild(x);
+    card.appendChild(foot);
+    ov.appendChild(card);
+
+    function close(){
+      doc.removeEventListener("keydown", key, true);
+      if (ov.parentNode) ov.parentNode.removeChild(ov);
+      if (prev && prev.focus) prev.focus();
+    }
+    function key(e){ if (e.key === "Escape"){ e.preventDefault(); close(); } }
+    function web(url){ var w = window.open(url, "_blank", "noopener"); if (w) close(); }
+
+    var e = encodeURIComponent;
+    bApp.addEventListener("click", function(){ window.location.href = d.href; setTimeout(close, 400); });
+    bGm.addEventListener("click", function(){
+      web("https://mail.google.com/mail/?view=cm&fs=1&to=" + e(d.to) + "&su=" + e(d.subject) + "&body=" + e(d.body));
+    });
+    bOl.addEventListener("click", function(){
+      web("https://outlook.office.com/mail/deeplink/compose?to=" + e(d.to) + "&subject=" + e(d.subject) + "&body=" + e(d.body));
+    });
+    bCp.addEventListener("click", function(){
+      copy(d.to).then(function(){
+        bCp.textContent = T.copied;
+        bCp.appendChild(make("span", null, d.to));
+      }, function(){});
+    });
+    x.addEventListener("click", close);
+    ov.addEventListener("click", function(ev){ if (ev.target === ov) close(); });
+    doc.addEventListener("keydown", key, true);
+
+    doc.body.appendChild(ov);
+    bApp.focus();
+  }
+
+  doc.addEventListener("click", function(ev){
+    if (ev.defaultPrevented || ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+    var t = ev.target;
+    var a = t && t.closest ? t.closest('a[href^="mailto:"], a[href^="MAILTO:"]') : null;
+    if (!a) return;
+    ev.preventDefault();
+    style();
+    open(parse(a.getAttribute("href")));
+  }, true);
+})();
+</script>
+</helmet>
+<div style="background:#0a0f14;color:#e6edf3;font-family:Inter,system-ui,sans-serif;line-height:1.55;font-size:16px;overflow-x:clip">
+
+  <nav style="position:sticky;top:0;z-index:50;min-height:64px;background:rgba(10,15,20,.88);backdrop-filter:blur(14px);border-bottom:1px solid #1d2832">
+    <div style="max-width:1180px;margin:0 auto;padding:10px 24px;min-height:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 20px">
+      <a href="https://www.hexa-ai.fr" style="display:flex;align-items:center;gap:10px"><img src="../img/Hexa-AI dark.png" alt="Hexa-AI" style="height:26px;width:auto;display:block"><span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa;border-left:1px solid #2a3a47;padding-left:10px">Edge</span></a>
+      <div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px 16px">
+        <a href="#features" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Features</a>
+        <a href="#protocols" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Protocols</a>
+        <a href="#remote" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Remote access</a>
+        <a href="#oncall" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">On-call</a>
+        <a href="#specs" style="font-size:13.5px;font-weight:500;color:#9aa8b3;white-space:nowrap" style-hover="color:#e6edf3">Hardware</a>
+        <a href="https://hexa-ai.odoo.com/knowledge/article/65" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:1px solid #2a3a47;border-radius:8px;font-size:12.5px;font-weight:600;color:#e6edf3;line-height:1;white-space:nowrap" style-hover="border-color:#00d4aa;color:#00d4aa"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg>Documentation</a>
+        <span style="display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid #1d2832;border-radius:7px;background:#11181f">
+          <a href="../index.html?lang=fr" data-hai-lang="fr" style="padding:4px 8px;border-radius:5px;color:#6b7884;font-size:12px;font-weight:700" style-hover="color:#e6edf3">FR</a>
+          <span style="padding:4px 8px;border-radius:5px;background:rgba(0,212,170,.14);color:#00d4aa;font-size:12px;font-weight:700">EN</span>
+        </span>
+        <a href="mailto:contact@hexa-ai.fr?subject=%5BHAI-P200-4G%5D%20Quote%20request&body=Hello%2C%0D%0A%0D%0AI%20would%20like%20a%20quote%20for%20the%20HAI-P200-4G%20box.%0D%0A%0D%0A-%20Company%20%3A%0D%0A-%20Contact%20%2F%20phone%20%3A%0D%0A-%20Number%20of%20boxes%20%3A%0D%0A-%20PLCs%20and%20protocols%20involved%20%3A%0D%0A-%20Main%20need%20%28monitoring%2C%20remote%20maintenance%2C%20on-call%29%20%3A%0D%0A-%20Target%20timeline%20%3A%0D%0A%0D%0AThank%20you." style="display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:8px;background:#00d4aa;color:#0a0f14;font-size:12.5px;font-weight:600;line-height:1;white-space:nowrap;box-shadow:0 6px 20px rgba(0,212,170,.25)" style-hover="background:#1ae5bb;color:#0a0f14">Request a quote</a>
+      </div>
+    </div>
+  </nav>
+
+  <header style="position:relative;overflow:hidden;padding:96px 0 88px">
+    <div aria-hidden="true" style="position:absolute;inset:-10%;background-image:linear-gradient(rgba(0,212,170,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.06) 1px,transparent 1px);background-size:32px 32px;pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 25%,#0a0f14 75%);pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none">
+      <span style="position:absolute;left:12%;top:26%;width:6px;height:6px;border-radius:50%;background:#00d4aa;box-shadow:0 0 12px #00d4aa;animation:haiPulse 3.6s ease-in-out infinite"></span>
+      <span style="position:absolute;left:78%;top:18%;width:6px;height:6px;border-radius:50%;background:#00d4aa;box-shadow:0 0 12px #00d4aa;animation:haiPulse 3.6s ease-in-out .8s infinite"></span>
+      <span style="position:absolute;left:88%;top:72%;width:6px;height:6px;border-radius:50%;background:#00d4aa;box-shadow:0 0 12px #00d4aa;animation:haiPulse 3.6s ease-in-out 1.6s infinite"></span>
+      <span style="position:absolute;left:16%;top:78%;width:6px;height:6px;border-radius:50%;background:#00d4aa;box-shadow:0 0 12px #00d4aa;animation:haiPulse 3.6s ease-in-out 2.4s infinite"></span>
+    </div>
+    <div style="position:relative;max-width:1180px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center">
+      <div>
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">HAI-P200-4G · Remote maintenance &amp; monitoring</span>
+        <h1 style="margin:16px 0 0;font-size:clamp(34px,4.6vw,56px);font-weight:800;letter-spacing:-.02em;line-height:1.05;color:#e6edf3;text-wrap:pretty">Monitor your machines and intervene remotely. <span style="color:#00d4aa">From day one.</span></h1>
+        <p style="margin:24px 0 0;font-size:18px;color:#9aa8b3;max-width:560px;text-wrap:pretty">One box between your PLCs and your desk: multi-protocol acquisition, local historisation, automatic charts, alerts that arrive with their context, and built-in Tailscale remote access. No development, no licence, no IT ticket.</p>
+        <div style="margin-top:32px;display:flex;gap:16px;flex-wrap:wrap">
+          <a href="mailto:contact@hexa-ai.fr?subject=%5BHAI-P200-4G%5D%20Quote%20request&body=Hello%2C%0D%0A%0D%0AI%20would%20like%20a%20quote%20for%20the%20HAI-P200-4G%20box.%0D%0A%0D%0A-%20Company%20%3A%0D%0A-%20Contact%20%2F%20phone%20%3A%0D%0A-%20Number%20of%20boxes%20%3A%0D%0A-%20PLCs%20and%20protocols%20involved%20%3A%0D%0A-%20Main%20need%20%28monitoring%2C%20remote%20maintenance%2C%20on-call%29%20%3A%0D%0A-%20Target%20timeline%20%3A%0D%0A%0D%0AThank%20you." style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:8px;background:#00d4aa;color:#0a0f14;font-size:15px;font-weight:600;line-height:1;box-shadow:0 6px 20px rgba(0,212,170,.25)" style-hover="background:#1ae5bb;color:#0a0f14;transform:translateY(-2px)">Request a quote →</a>
+          <a href="#features" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:8px;border:1px solid #00d4aa;color:#00d4aa;font-size:15px;font-weight:600;line-height:1" style-hover="background:rgba(0,212,170,.12);transform:translateY(-2px)">See the features</a>
+        </div>
+        <div style="margin-top:40px;display:flex;gap:12px;flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#11181f;border:1px solid #2a3a47;border-radius:999px;font-size:13px;font-weight:500">Installed in <strong style="color:#00d4aa;font-weight:600">under an hour</strong></span>
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#11181f;border:1px solid #2a3a47;border-radius:999px;font-size:13px;font-weight:500"><strong style="color:#00d4aa;font-weight:600">Zero lines of code</strong></span>
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#11181f;border:1px solid #2a3a47;border-radius:999px;font-size:13px;font-weight:500"><strong style="color:#00d4aa;font-weight:600">Read-only</strong> acquisition</span>
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#11181f;border:1px solid #2a3a47;border-radius:999px;font-size:13px;font-weight:500">4G + <strong style="color:#00d4aa;font-weight:600">Tailscale</strong> built in</span>
+        </div>
+      </div>
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;padding:24px;border:1px solid #1d2832;border-radius:12px;background:radial-gradient(circle at 30% 30%,rgba(0,212,170,.12),transparent 60%),#14202a">
+        <img src="../img/Box_Monitoring_HAI_P200.webp" alt="HAI-P200-4G industrial gateway" style="max-width:92%;height:auto;display:block;filter:drop-shadow(0 14px 24px rgba(0,0,0,.45))">
+      </div>
+    </div>
+  </header>
+
+  <section style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:760px;margin:0 auto 56px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Why swap your standard modem</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Three frictions that stall monitoring projects</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47;transform:translateY(-3px)">
+          <div style="width:40px;height:2px;background:#00d4aa;margin-bottom:24px"></div>
+          <h3 style="margin:0 0 12px;font-size:19px;font-weight:700">The VPN headache</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">Traditional industrial VPNs need firewall rules, a public IP, a server to maintain — and they lock you into one vendor.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47;transform:translateY(-3px)">
+          <div style="width:40px;height:2px;background:#00d4aa;margin-bottom:24px"></div>
+          <h3 style="margin:0 0 12px;font-size:19px;font-weight:700">Alarms with no context</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">A fault fires, and someone has to reconstruct what happened before it: phone calls, exports, spreadsheets. Time goes into investigating, not repairing.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47;transform:translateY(-3px)">
+          <div style="width:40px;height:2px;background:#00d4aa;margin-bottom:24px"></div>
+          <h3 style="margin:0 0 12px;font-size:19px;font-weight:700">The IT barrier</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">Custom scripts, config files edited by hand, dashboards built by hand: monitoring should no longer require developer skills.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" style="border-top:1px solid #1d2832;background:#0d1319;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:760px;margin:0 auto 20px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Connect · Visualise · Notify</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Three steps, and your fleet is under watch</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">Days of configuration turned into minutes of installation.</p>
+      </div>
+      <p style="text-align:center;margin:0 0 40px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6b7884">Hover or click a band to see the real interface</p>
+
+      <div style="display:flex;flex-direction:column;gap:24px">
+
+        <div data-reveal="1" style="perspective:2400px;height:520px" onMouseEnter="{{ in0 }}" onMouseLeave="{{ out0 }}" onClick="{{ tog0 }}">
+          <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.22,.61,.36,1);transform:{{ t0 }}">
+            <div style="position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:36px 40px;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+                <div style="width:48px;height:48px;flex:none;border-radius:12px;background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center;color:#00d4aa">
+                  <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M9 2v6M15 2v6M7 8h10v4a5 5 0 0 1-5 5 5 5 0 0 1-5-5V8zM12 17v5"/></svg>
+                </div>
+                <div>
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6b7884">Step 01</span>
+                  <h3 style="margin:2px 0 0;font-size:24px;font-weight:700">Connect without coding</h3>
+                </div>
+              </div>
+              <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#9aa8b3;max-width:860px">The <strong style="color:#e6edf3;font-weight:600">Data-Plug</strong> graphical configurator declares your devices and variables in a few clicks: address, slave ID, polling rate, data type, byte order, unit, scale. No file to edit, no script.</p>
+              <ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;max-width:980px">
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Modbus TCP, serial Modbus (RS232/RS485), S7, OPC-UA with a built-in node browser</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Categorise on the spot: measure, state, counter, alarm</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Read-only acquisition</strong>: the box never writes into your PLCs</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>CSV import / export: 500 points in a spreadsheet instead of 500 clicks</span></li>
+              </ul>
+            </div>
+            <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#14202a;border:1px solid #2a3a47;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="padding:14px 18px;border-bottom:1px solid #1d2832;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa;font-weight:600">Data-Plug — inputs configuration</div>
+              <div style="flex:1;overflow:hidden;background:#fff"><img src="../img/ui-dataplug.png" alt="Data-Plug interface: Modbus input configuration" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div>
+            </div>
+          </div>
+        </div>
+
+        <div data-reveal="1" style="perspective:2400px;height:520px" onMouseEnter="{{ in1 }}" onMouseLeave="{{ out1 }}" onClick="{{ tog1 }}">
+          <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.22,.61,.36,1);transform:{{ t1 }}">
+            <div style="position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:36px 40px;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+                <div style="width:48px;height:48px;flex:none;border-radius:12px;background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center;color:#00d4aa">
+                  <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M3 3v18h18M7 14c2-6 4 4 6-2s3 3 5-4"/></svg>
+                </div>
+                <div>
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6b7884">Step 02</span>
+                  <h3 style="margin:2px 0 0;font-size:24px;font-weight:700">Visualise instantly</h3>
+                </div>
+              </div>
+              <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#9aa8b3;max-width:860px">No dashboard to build: the <strong style="color:#e6edf3;font-weight:600">Data-Explorer</strong> adapts to the variables you declared and picks the right rendering on its own.</p>
+              <ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;max-width:980px">
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Real-time Live mode, or history with two-period comparison</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Smooth curves for measurements, step charts for states, bars for counters</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>Production batches: one click opens the history locked on the batch window</span></li>
+                <li style="display:flex;gap:10px;font-size:14px;color:#9aa8b3;line-height:1.5"><span style="color:#00d4aa;font-weight:700">✓</span><span>GPS / NMEA position on a map, read-only guest access for your customer</span></li>
+              </ul>
+            </div>
+            <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#14202a;border:1px solid #2a3a47;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="padding:14px 18px;border-bottom:1px solid #1d2832;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa;font-weight:600">Data-Explorer — measures, states, counters</div>
+              <div style="flex:1;overflow:hidden;background:#fff"><img src="../img/ui-dataexplorer.png" alt="Data-Explorer: measurement curve, step chart and counter bars" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div>
+            </div>
+          </div>
+        </div>
+
+        <div data-reveal="1" style="perspective:2400px;height:520px" onMouseEnter="{{ in2 }}" onMouseLeave="{{ out2 }}" onClick="{{ tog2 }}">
+          <div style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.22,.61,.36,1);transform:{{ t2 }}">
+            <div style="position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:36px 40px;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+                <div style="width:48px;height:48px;flex:none;border-radius:12px;background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2);display:flex;align-items:center;justify-content:center;color:#00d4aa">
+                  <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M10.3 21a2 2 0 0 0 3.4 0"/></svg>
+                </div>
+                <div>
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6b7884">Step 03</span>
+                  <h3 style="margin:2px 0 0;font-size:24px;font-weight:700">Notify, escalate, acknowledge</h3>
+                </div>
+              </div>
+              <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#9aa8b3;max-width:900px">Alarms and reports share the same output channels. For an alarm you choose: a direct send, or an escalation chain you compose — your levels, your retries, your recipients.</p>
+              <div data-schema="1" style="display:grid;grid-template-columns:170px 46px minmax(0,1fr) 46px 178px;grid-template-rows:auto auto;gap:10px 0;align-items:stretch">
+                <div style="grid-column:1;grid-row:1"><div style="border:1px solid rgba(255,122,122,.45);background:rgba(255,122,122,.07);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;height:100%"><span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff7a7a">Alarm</span><p style="margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#9aa8b3">Rising edge, with debounce</p></div></div>
+                <div style="grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:10px">
+                  <div style="flex:1;display:flex;align-items:center;padding:0 4px"><span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span></div>
+                  <div style="flex:1;display:flex;align-items:center;padding:0 4px"><span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span></div>
+                </div>
+                <div style="grid-column:3;grid-row:1;display:flex;flex-direction:column;gap:10px">
+                  <div style="border:1px solid #2a3a47;background:#0d1319;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;flex:1"><span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa">Direct notification</span><p style="margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#9aa8b3">One immediate send to the alarm recipients</p></div>
+                  <div style="border:1px solid #2a3a47;background:#0d1319;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;flex:1"><span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa">Or an escalation you compose</span><p style="margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#9aa8b3">Your levels, your retries, your recipients — up to a voice call as last resort</p></div>
+                </div>
+                <div style="grid-column:4;grid-row:1;display:flex;flex-direction:column;gap:10px">
+                  <div style="flex:1;display:flex;align-items:center;padding:0 4px"><span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span></div>
+                  <div style="flex:1;display:flex;align-items:center;padding:0 4px"><span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span></div>
+                </div>
+                <div style="grid-column:5;grid-row:1 / span 2;border:1px solid rgba(0,212,170,.4);background:rgba(0,212,170,.06);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;justify-content:center">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa">Output channels</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px"><span style="padding:4px 9px;border-radius:6px;background:#14202a;font-size:12px;color:#e6edf3;white-space:nowrap">✉️ E-mail</span><span style="padding:4px 9px;border-radius:6px;background:#14202a;font-size:12px;color:#e6edf3;white-space:nowrap">💬 SMS ✓</span><span style="padding:4px 9px;border-radius:6px;background:#14202a;font-size:12px;color:#e6edf3;white-space:nowrap">📞 Call ✓</span><span style="padding:4px 9px;border-radius:6px;background:#14202a;font-size:12px;color:#e6edf3;white-space:nowrap">🔗 Webhook</span></div>
+                  <span style="font-size:11px;line-height:1.4;color:#6b7884">✓ Acknowledging — reply “OK” or press 1 during the call — stops the escalation.</span>
+                </div>
+                <div style="grid-column:1;grid-row:2"><div style="border:1px solid #2a3a47;background:#0d1319;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;height:100%"><span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa">Report</span><p style="margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#9aa8b3">Daily, weekly or on batch closure</p></div></div>
+                <div style="grid-column:2 / span 3;grid-row:2;position:relative;display:flex;align-items:center;padding:0 4px">
+                  <span style="position:absolute;left:0;right:0;top:calc(50% - 20px);text-align:center;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#6b7884">straight through</span>
+                  <span style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:rgba(0,212,170,.3)"></span><span style="width:0;height:0;border-left:7px solid rgba(0,212,170,.8);border-top:5px solid transparent;border-bottom:5px solid transparent"></span></span>
+                </div>
+              </div>
+            </div>
+            <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#14202a;border:1px solid #2a3a47;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="padding:14px 18px;border-bottom:1px solid #1d2832;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#00d4aa;font-weight:600">The alert e-mail you receive</div>
+              <div style="flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 400px">
+                <div style="padding:28px 32px;display:flex;flex-direction:column;gap:16px;justify-content:center">
+                  <p style="margin:0;font-size:16px;font-weight:700;color:#e6edf3">What the e-mail carries</p>
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px">
+                    <li style="display:flex;gap:10px;font-size:14px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span>Alarm name, severity, timestamp and the controller involved</span></li>
+                    <li style="display:flex;gap:10px;font-size:14px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span>The measurements that deviated most from their usual behaviour, with their value at trigger time</span></li>
+                    <li style="display:flex;gap:10px;font-size:14px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span>Trend charts for the top three and the alarm state, rendered inside the mail</span></li>
+                  </ul>
+                </div>
+                <div style="overflow:hidden;background:#fff;border-left:1px solid #2a3a47"><img src="../img/ui-rca-email-top.png" alt="Alert e-mail with the top impacted variables" style="width:100%;height:auto;display:block"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="protocols" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:800px;margin:0 auto 48px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Industrial connectivity</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">The acquisition protocols</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">Six inputs configured from the same web interface, with no intermediate gateway — and always read-only.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px">
+
+        <div data-reveal="1" style="grid-column:span 3;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="../img/logos/modbus.webp" alt="Modbus" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">Modbus TCP</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Production</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Holding &amp; input registers, coils, discrete inputs. 17 data types, 16/32/64-bit byte order, scale and unit per variable.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 3;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="../img/logos/modbus-rtu.png" alt="Modbus RTU" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">Modbus RTU</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Production</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">RS232 / RS485 on the four terminal-block ports through the built-in RTU→TCP gateway. 1200 to 115200 baud, 8N1 by default.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 3;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="../img/logos/siemens-s7.png" alt="Siemens S7" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">S7 · ISO-on-TCP</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Production</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Reads data blocks on S7-300/400/1200/1500. On 1200/1500: PUT/GET enabled and non-optimised DB access required.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 3;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="../img/logos/opc-ua.png" alt="OPC UA" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">OPC-UA</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Production</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Built-in node browser; anonymous, username or certificate auth, with client certificate generation from the interface.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 4;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="../img/logos/bacnet.png" alt="BACnet" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">BACnet/IP</span>
+              <span hidden="{{ hideBeta }}" style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#e8b04b;font-weight:600;overflow-wrap:anywhere">Beta</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Who-Is discovery and network scanning; reads analog, binary and multi-state objects (present-value).</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 4;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="../img/logos/nmea.png" alt="NMEA" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">NMEA 0183</span>
+              <span hidden="{{ hideBeta }}" style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#e8b04b;font-weight:600;overflow-wrap:anywhere">Beta</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">TCP client, TCP server or UDP, with talker filtering. Listen mode shows the live stream; one click turns a field into a variable.</p>
+        </div>
+
+        <div data-reveal="1" style="grid-column:span 4;background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:22px" style-hover="border-color:#00d4aa;background:#14202a">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <span style="width:64px;height:44px;flex:none;border-radius:9px;background:#fff;border:1px solid #2a3a47;display:flex;align-items:center;justify-content:center;padding:6px"><img src="../img/logos/mqtt.jpg" alt="MQTT" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block"></span>
+            <div style="min-width:92px;flex:1">
+              <span style="display:block;font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere">Internal MQTT</span>
+              <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#00d4aa;font-weight:600;overflow-wrap:anywhere">Via Node-RED</span>
+            </div>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:#9aa8b3">Anything a Node-RED flow can read becomes a historised variable: external APIs, exotic sensors, in-house formats.</p>
+        </div>
+
+              </div>
+
+      <div style="margin-top:32px">
+        <div style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:22px 24px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#6b7884">Out to your systems</span>
+          <p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:#9aa8b3"><strong style="color:#e6edf3;font-weight:600">Outbound MQTT</strong> and <strong style="color:#e6edf3;font-weight:600">HTTPS JSON webhooks</strong> with bearer tokens: your data reaches your SaaS, SCADA or ERP, with failed messages replayed.</p>
+        </div>
+      </div>
+      <div style="margin-top:32px;padding:32px;background:#0d1319;border:1px solid #1d2832;border-radius:12px">
+        <p style="margin:0;text-align:center;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#6b7884">PLCs &amp; platforms connected</p>
+        <div style="margin:22px auto 0;max-width:940px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 18px">
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Siemens</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Schneider Electric</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Wago</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Beckhoff</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Rockwell / Allen-Bradley</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Omron</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Mitsubishi</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">ABB</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Phoenix Contact</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Delta</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Johnson Controls</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">Isma Controlli</span>
+          <span style="font-size:15.5px;font-weight:700;color:rgba(230,237,243,.6)" style-hover="color:#e6edf3">CODESYS</span>
+          <span style="font-size:15.5px;font-weight:700;color:#00d4aa">and many more</span>
+        </div>
+        <p style="margin:22px auto 0;max-width:760px;text-align:center;font-size:14px;line-height:1.6;color:#9aa8b3">Nothing in the box is vendor-specific: <strong style="color:#e6edf3;font-weight:600">any device that speaks Modbus, S7, OPC-UA, BACnet/IP or NMEA 0183 connects</strong>. And we program these platforms daily — it has been our core business from day one.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="remote" style="border-top:1px solid #1d2832;background:#11181f;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:40px">
+      <div data-reveal="1" style="max-width:900px">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Remote maintenance</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Your PLCs, from your desk. Without an IT ticket.</h2>
+        <p style="margin:20px 0 0;font-size:17px;color:#e6edf3;font-weight:500">The HAI-P200-4G embeds Tailscale, a modern WireGuard-based VPN: one encrypted outbound connection, no public IP, no inbound rule to request.</p>
+        <ul style="margin:24px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:16px 48px">
+          <li style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Commissioned with an auth key</strong> pasted into the web interface: two minutes, no VPN server to install.</span></li>
+          <li style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Subnet advertised in CIDR</strong>: the machine's whole local network becomes reachable, including devices that know nothing about VPNs.</span></li>
+          <li style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Or port by port</strong>, when IT refuses to have its LAN routed: targeted forwarding of one port to one device.</span></li>
+          <li style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#9aa8b3"><span style="color:#00d4aa;font-weight:700">✓</span><span><strong style="color:#e6edf3;font-weight:600">Diagnose with your own tools</strong>: CODESYS, TIA Portal, a browser, VNC — addressing the device by its IP.</span></li>
+        </ul>
+        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+          <span style="padding:7px 13px;border-radius:999px;background:rgba(0,212,170,.12);color:#00d4aa;font-size:12.5px;font-weight:600">WireGuard</span>
+          <span style="padding:7px 13px;border-radius:999px;background:rgba(0,212,170,.12);color:#00d4aa;font-size:12.5px;font-weight:600">No inbound port</span>
+          <span style="padding:7px 13px;border-radius:999px;background:rgba(0,212,170,.12);color:#00d4aa;font-size:12.5px;font-weight:600">Works behind 4G</span>
+          <span style="padding:7px 13px;border-radius:999px;background:rgba(0,212,170,.12);color:#00d4aa;font-size:12.5px;font-weight:600">No routing between interfaces by default</span>
+        </div>
+      </div>
+      <figure data-reveal="1" style="margin:0 auto;width:100%;max-width:880px;border:1px solid #2a3a47;border-radius:12px;overflow:hidden;background:#fff">
+        <img src="../img/schema-tailscale-en.jpg" alt="Diagram: user PC, Tailscale tunnel over the Internet, HAI-P200-4G gateway, PLC on the local network" style="width:100%;height:auto;display:block">
+        <figcaption style="padding:12px 16px;background:#14202a;border-top:1px solid #2a3a47;font-size:12.5px;color:#9aa8b3">An encrypted tunnel from the engineer's laptop to the PLC, with no public IP and no port forwarding. Devices are addressed by IP: broadcast-based discovery (PROFINET DCP, CODESYS scan) does not cross the tunnel.</figcaption>
+      </figure>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Even without a VPN</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">The box polls your server outbound; you answer with a command. Update, reboot, system snapshot — straight through 4G, without a single inbound port.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Redundant Internet link</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Automatic failover Ethernet → Wi-Fi → 4G, continuously probed. The site stays reachable even when the plant network goes down.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Commissioning from a phone</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Turn on the Wi-Fi hotspot and its captive portal: set the box up from a smartphone, QR code included, with no laptop or patch cable in the cabinet.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Updates under control</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Signed software repository, version of your choice, rollback available. You decide when a machine changes version.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="monitoring" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div style="max-width:800px;margin:0 auto 56px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Monitoring</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">From a PLC variable to a PDF report</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">The whole chain runs inside the box. No mandatory cloud, no platform subscription.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:28px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#00d4aa">01 — ACQUISITION</span>
+          <h3 style="margin:14px 0 10px;font-size:18px;font-weight:700">We read your devices</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Cyclic polling per device, adjustable rate (5 s by default). Unit, description and category are carried by the variable.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:28px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#00d4aa">02 — HISTORISATION</span>
+          <h3 style="margin:14px 0 10px;font-size:18px;font-weight:700">We store it locally</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Embedded database on the box, partitioned by month, 30-day retention by default. History stays available without Internet; the industrial micro-SD extends capacity.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:28px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#00d4aa">03 — BATCHES</span>
+          <h3 style="margin:14px 0 10px;font-size:18px;font-weight:700">We split by production batch</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">You designate the variable that identifies the batch: its transitions open and close batches automatically. One click reopens the history on the exact batch window.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:28px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#00d4aa">04 — REPORTS</span>
+          <h3 style="margin:14px 0 10px;font-size:18px;font-weight:700">We send the summary</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Daily, weekly, or <strong style="color:#e6edf3;font-weight:600">on batch closure</strong>: the e-mail carries the summary — statistics for your favourite variables, charts for the first five, CSV optional — and the same report is generated as a PDF, archived and readable from the interface.</p>
+        </article>
+      </div>
+      <div style="margin-top:20px;display:flex;align-items:center;gap:14px;padding:18px 22px;background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.25);border-radius:12px">
+        <span style="font-size:20px;line-height:1">📄</span>
+        <p style="margin:0;font-size:14.5px;line-height:1.6;color:#e6edf3">The batch closes, the report leaves on its own. For a production shop, that is traceability nobody has to remember.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="rca" style="border-top:1px solid #1d2832;background:#0d1319;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:40px">
+      <div data-reveal="1" style="max-width:900px">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Diagnostic assistance</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">When the alarm lands, you already know where to look.</h2>
+        <p style="margin:20px 0 0;font-size:16.5px;line-height:1.65;color:#9aa8b3">On every alarm the box compares the <strong style="color:#e6edf3;font-weight:600">last 30 minutes</strong> of each measurement against its usual behaviour, and attaches the five that deviated most — with trend charts for the top three. The operator opens the mail and sees where to look instead of reconstructing the context afterwards.</p>
+        <p style="margin:16px 0 0;font-size:14.5px;line-height:1.65;color:#6b7884">Honestly: this is a statistical deviation analysis (z-score), not an oracle. It points at temporal correlations — what it saves is diagnosis time, not the cause it asserts.</p>
+      </div>
+      <figure data-reveal="1" style="margin:0 auto;width:100%;max-width:660px">
+        <div style="border-radius:12px;overflow:hidden"><img src="../img/ui-rca-modal.png" alt="30-minute analysis window: variables ranked by impact with their trends" style="width:100%;height:auto;display:block"></div>
+        <figcaption style="padding:12px 2px 0;font-size:12.5px;color:#9aa8b3">Built into the interface: impact per variable, value at alarm time, and trends over the analysed window.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="oncall" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:800px;margin:0 auto 48px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">On-call</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">A gateway that calls you at 3 a.m.</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">Most gateways send an e-mail and consider the job done.</p>
+      </div>
+      <div data-reveal="1" data-alarmflow="1" style="margin:0 0 24px;padding:28px 30px;background:#11181f;border:1px solid #1d2832;border-radius:12px">
+        <p style="margin:0 0 22px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#6b7884">What happens when an alarm fires</p>
+        <div style="display:grid;grid-template-columns:206px minmax(0,1fr) 236px;grid-template-rows:auto auto auto;gap:12px 0;align-items:center">
+          <div data-node="1" style="grid-column:1;grid-row:1 / span 3;border:1px solid #2a3a47;background:#0d1319;border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;align-self:stretch;justify-content:center">
+            <span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff7a7a">Alarm</span>
+            <span style="font-size:15px;font-weight:700;color:#e6edf3">NiveauHaut</span>
+            <span style="font-size:12px;color:#9aa8b3">HAI-P200-4G · Line 2</span>
+          </div>
+        <div style="grid-column:2;grid-row:1;position:relative;height:24px;display:flex;align-items:center">
+          <span data-track="0" style="position:absolute;left:14px;right:14px;height:2px;background:rgba(0,212,170,.4);transform:scaleX(0);transform-origin:left center"></span>
+          <span data-dot="0" style="position:absolute;left:14px;width:8px;height:8px;border-radius:50%;background:#00d4aa;box-shadow:0 0 10px rgba(0,212,170,.9);opacity:0"></span>
+        </div>
+        <div data-chip="0" style="grid-column:3;grid-row:1;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #2a3a47;border-radius:10px;background:#0d1319;opacity:.3">
+          <span style="font-size:17px;line-height:1">✉️</span>
+          <span><span style="display:block;font-size:13px;font-weight:600;color:#e6edf3">E-mail</span><span style="display:block;font-size:11.5px;line-height:1.35;color:#9aa8b3">with the charts</span></span>
+        </div>
+        <div style="grid-column:2;grid-row:2;position:relative;height:24px;display:flex;align-items:center">
+          <span data-track="1" style="position:absolute;left:14px;right:14px;height:2px;background:rgba(0,212,170,.4);transform:scaleX(0);transform-origin:left center"></span>
+          <span data-dot="1" style="position:absolute;left:14px;width:8px;height:8px;border-radius:50%;background:#00d4aa;box-shadow:0 0 10px rgba(0,212,170,.9);opacity:0"></span>
+        </div>
+        <div data-chip="1" style="grid-column:3;grid-row:2;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #2a3a47;border-radius:10px;background:#0d1319;opacity:.3">
+          <span style="font-size:17px;line-height:1">💬</span>
+          <span><span style="display:block;font-size:13px;font-weight:600;color:#e6edf3">SMS</span><span style="display:block;font-size:11.5px;line-height:1.35;color:#9aa8b3">reply “OK”</span></span>
+        </div>
+        <div style="grid-column:2;grid-row:3;position:relative;height:24px;display:flex;align-items:center">
+          <span data-track="2" style="position:absolute;left:14px;right:14px;height:2px;background:rgba(0,212,170,.4);transform:scaleX(0);transform-origin:left center"></span>
+          <span data-dot="2" style="position:absolute;left:14px;width:8px;height:8px;border-radius:50%;background:#00d4aa;box-shadow:0 0 10px rgba(0,212,170,.9);opacity:0"></span>
+        </div>
+        <div data-chip="2" style="grid-column:3;grid-row:3;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #2a3a47;border-radius:10px;background:#0d1319;opacity:.3">
+          <span data-ring="1" style="font-size:17px;line-height:1">📞</span>
+          <span><span style="display:block;font-size:13px;font-weight:600;color:#e6edf3">Voice call</span><span style="display:block;font-size:11.5px;line-height:1.35;color:#9aa8b3">press 1 to acknowledge</span></span>
+        </div>
+        </div>
+        <div style="position:relative;height:24px;margin-top:22px">
+          <p data-status="0" style="position:absolute;inset:0;margin:0;font-size:13.5px;font-weight:500;color:#ff7a7a">Alarm fired — level 1 notified immediately.</p>
+          <p data-status="1" style="position:absolute;inset:0;margin:0;font-size:13.5px;font-weight:500;color:#e8b04b;opacity:0">No acknowledgement — moving to the next level.</p>
+          <p data-status="2" style="position:absolute;inset:0;margin:0;font-size:13.5px;font-weight:500;color:#00d4aa;opacity:0">Acknowledged during the call — the chain stops.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:30px">
+          <h3 style="margin:0 0 10px;font-size:18px;font-weight:700">Automatic voice call</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">As a last resort the box calls and reads out the alarm with speech synthesis. Press 1 during the call to acknowledge. A voice-enabled SIM is required.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:30px">
+          <h3 style="margin:0 0 10px;font-size:18px;font-weight:700">Escalation by levels</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Level 1, retry, level 2: channels are chosen per person and per level. The chain stops at the first acknowledgement — SMS "OK", a keypad press, or the interface.</p>
+        </article>
+        <article data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:30px">
+          <h3 style="margin:0 0 10px;font-size:18px;font-weight:700">Anti-flood by design</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Minimum active time, cooldown between two sends, cap per time window. A chattering alarm does not wake the on-call engineer twenty times.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="ecosystem" style="border-top:1px solid #1d2832;background:#11181f;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:800px;margin:0 auto 48px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Ecosystem</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Simple by default does not mean limited</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:#9aa8b3">An application catalogue installs on the box in one click, with volume backup and restore.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:900px;margin:0 auto 32px">
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">Node-RED</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">Grafana</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">Ignition Edge</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">PostgreSQL</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">pgAdmin</span>
+        <span style="padding:10px 18px;border:1px solid #2a3a47;border-radius:999px;background:#0d1319;font-size:14px;font-weight:600">Modbus RTU → TCP gateway</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Guest access</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Open a few read-only pages to your end customer — plus a link to their Grafana or Node-RED — without ever handing over administration.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Custom flows</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Node-RED stays the universal escape hatch: external APIs, proprietary formats, business calculations. What it produces comes back as an ordinary historised variable.</p>
+        </div>
+        <div data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:26px">
+          <h3 style="margin:0 0 10px;font-size:16px;font-weight:700;color:#00d4aa">Accessible interface</h3>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9aa8b3">Contrast, text size, keyboard navigation, reduced motion: the interface meets the accessibility requirements of public tenders.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="specs" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:760px;margin:0 auto 56px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Hardware</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Built to last. In the cabinet, anywhere.</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1.25fr;gap:48px;align-items:center">
+        <div style="border:1px solid #1d2832;border-radius:12px;background:radial-gradient(circle at 40% 30%,rgba(0,212,170,.1),transparent 60%),#14202a;padding:28px;display:flex;align-items:center;justify-content:center">
+          <img src="../img/hai-p200-4g.webp" alt="HAI-P200-4G aluminium DIN-rail enclosure with 4G antenna" style="max-width:100%;height:auto;display:block;filter:drop-shadow(0 14px 24px rgba(0,0,0,.45))">
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px">
+          <div data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:24px">
+            <h3 style="margin:0 0 18px;font-size:15px;font-weight:700;color:#00d4aa">Core &amp; power</h3>
+            <dl style="margin:0;display:flex;flex-direction:column;gap:14px">
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Module</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Raspberry Pi CM4<br><span style="font-weight:400;color:#9aa8b3">Quad-core · 4 GB RAM</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Storage</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">32 GB soldered eMMC<br><span style="font-weight:400;color:#9aa8b3">+ optional 128 GB industrial micro-SD — historisation moves to it automatically</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">System</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Debian 12 · HAI-OS<br><span style="font-weight:400;color:#9aa8b3">Web admin interface</span></dd></div>
+            </dl>
+          </div>
+          <div data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:24px">
+            <h3 style="margin:0 0 18px;font-size:15px;font-weight:700;color:#00d4aa">Connectivity</h3>
+            <dl style="margin:0;display:flex;flex-direction:column;gap:14px">
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Wired network</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Two Ethernet ports<br><span style="font-weight:400;color:#9aa8b3">Configured separately, no routing between them by default</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Serial ports</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">4 on the terminal block<br><span style="font-weight:400;color:#9aa8b3">2× RS232 + 2× RS485</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Wireless &amp; remote</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">4G LTE + Wi-Fi<br><span style="font-weight:400;color:#9aa8b3">Tailscale built in, automatic link failover</span></dd></div>
+            </dl>
+          </div>
+          <div data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:24px">
+            <h3 style="margin:0 0 18px;font-size:15px;font-weight:700;color:#00d4aa">Ruggedness</h3>
+            <dl style="margin:0;display:flex;flex-direction:column;gap:14px">
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Form factor</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Aluminium enclosure<br><span style="font-weight:400;color:#9aa8b3">DIN-rail mounting</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Power</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Industrial terminal block<br><span style="font-weight:400;color:#9aa8b3">Wide DC range</span></dd></div>
+              <div><dt style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7884">Reliability</dt><dd style="margin:3px 0 0;font-size:14px;font-weight:600">Real-time clock<br><span style="font-weight:400;color:#9aa8b3">Service supervision with automatic restart</span></dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cases" style="border-top:1px solid #1d2832;background:#11181f;padding:96px 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="max-width:760px;margin:0 auto 56px;text-align:center">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Use cases</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">Who puts a HAI-P200 in the cabinet</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px">
+        <article data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa">Machine builders · OEM</span>
+          <h3 style="margin:12px 0 10px;font-size:19px;font-weight:700">Monitor the installed base without blowing up service costs</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">The same box on every machine shipped: instant remote access, history ready when the customer calls, and a recurring service offer to sell.</p>
+        </article>
+        <article data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa">Production shops</span>
+          <h3 style="margin:12px 0 10px;font-size:19px;font-weight:700">One report per batch, with nobody remembering</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">The batch closes and the PDF leaves with its statistics and charts. Traceability by configuration, not by development.</p>
+        </article>
+        <article data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa">BMS / HVAC — with Scorp-IO</span>
+          <h3 style="margin:12px 0 10px;font-size:19px;font-weight:700">The field layer of a SaaS platform</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">Instrumented air handling units (temperature, CO₂, humidity) with data fed cleanly into the vendor's platform.</p>
+        </article>
+        <article data-reveal="1" style="background:#0d1319;border:1px solid #1d2832;border-radius:12px;padding:32px" style-hover="border-color:#2a3a47">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#00d4aa">Marine &amp; inland waterways</span>
+          <h3 style="margin:12px 0 10px;font-size:19px;font-weight:700">Mobile sites that sync when coverage returns</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#9aa8b3">NMEA 0183 over TCP or UDP, position on a map, and local historisation that absorbs the dead zones: edge before cloud.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" style="border-top:1px solid #1d2832;padding:96px 0">
+    <div style="max-width:860px;margin:0 auto;padding:0 24px">
+      <div data-reveal="1" style="text-align:center;margin-bottom:48px">
+        <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">FAQ</span>
+        <h2 style="margin:12px 0 0;font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.01em">What people ask before ordering</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Can the box write into my PLC?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">No, by design: acquisition is <strong style="color:#e6edf3;font-weight:600">strictly read-only</strong>. No command is ever sent to your equipment, which makes the conversation with your security team far shorter.</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Do we have to modify the PLC program?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">In most cases, no: we read the variables already exposed (Modbus registers, S7 data blocks, OPC-UA nodes). On S7-1200/1500 you simply enable PUT/GET and turn off optimised access on the blocks being read.</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Does my data leave for the cloud?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">No. Acquisition, historisation and visualisation run inside the box. You then decide what to republish, and to whom, over MQTT or a webhook.</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">What happens during a network outage?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">Collection carries on: historisation is local and does not depend on Internet. Untransmitted data is replayed on reconnection, within the configured retention (30 days by default).</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">Will our IT department have to open ports?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">No. Everything goes out as an encrypted outbound connection: no public IP, no port forwarding, no inbound rule. With 4G the box can stay entirely off the corporate network.</p>
+        </details>
+        <details data-reveal="1" style="background:#11181f;border:1px solid #1d2832;border-radius:12px;padding:20px 24px">
+          <summary style="cursor:pointer;font-size:16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center">How are alarms triggered?<span style="color:#00d4aa;font-size:20px;line-height:1">+</span></summary>
+          <p style="margin:14px 0 0;font-size:14.5px;line-height:1.65;color:#9aa8b3">On the <strong style="color:#e6edf3;font-weight:600">state change</strong> of a boolean variable declared as an alarm — thresholds stay in your PLC, where they belong. The box adds debounce, escalation, acknowledgement and diagnostic context.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="border-top:1px solid #1d2832;background:#0d1319;padding:104px 0">
+    <div style="max-width:760px;margin:0 auto;padding:0 24px;text-align:center">
+      <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#00d4aa">Next step</span>
+      <h2 style="margin:12px 0 0;font-size:clamp(30px,4.5vw,44px);font-weight:800;line-height:1.12;letter-spacing:-.01em">Ready to connect your installations?</h2>
+      <p style="margin:18px 0 0;font-size:18px;color:#e6edf3">One test unit for next week, or a fleet for the year? Describe your need and we come back with a full quote — box, antennas, storage, power supply and the right options.</p>
+      <p style="margin:14px 0 0;font-size:15px;color:#9aa8b3">No salespeople: you talk directly to the engineer who will handle your project.</p>
+      <div style="margin-top:36px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <a href="mailto:contact@hexa-ai.fr?subject=%5BHAI-P200-4G%5D%20Quote%20request&body=Hello%2C%0D%0A%0D%0AI%20would%20like%20a%20quote%20for%20the%20HAI-P200-4G%20box.%0D%0A%0D%0A-%20Company%20%3A%0D%0A-%20Contact%20%2F%20phone%20%3A%0D%0A-%20Number%20of%20boxes%20%3A%0D%0A-%20PLCs%20and%20protocols%20involved%20%3A%0D%0A-%20Main%20need%20%28monitoring%2C%20remote%20maintenance%2C%20on-call%29%20%3A%0D%0A-%20Target%20timeline%20%3A%0D%0A%0D%0AThank%20you." style="display:inline-flex;align-items:center;gap:8px;padding:16px 26px;border-radius:8px;background:#00d4aa;color:#0a0f14;font-size:16px;font-weight:600;line-height:1;box-shadow:0 6px 20px rgba(0,212,170,.25)" style-hover="background:#1ae5bb;color:#0a0f14;transform:translateY(-2px)">Request a quote →</a>
+        <a href="https://hexa-ai.odoo.com/knowledge/article/65" style="display:inline-flex;align-items:center;gap:8px;padding:16px 26px;border-radius:8px;border:1px solid #2a3a47;color:#e6edf3;font-size:16px;font-weight:600;line-height:1" style-hover="border-color:#00d4aa;color:#00d4aa">Read the documentation</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid #1d2832;padding:56px 0 32px;font-size:13.5px">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:40px;border-bottom:1px solid #1d2832">
+        <div>
+          <img src="../img/Hexa-AI dark.png" alt="Hexa-AI" style="height:26px;width:auto;display:block;margin-bottom:16px">
+          <p style="margin:0;color:#9aa8b3;line-height:1.6;max-width:340px">IT/OT interconnection specialists. We build the bridges between your industrial installations and your information system.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#6b7884">Product</p>
+          <a href="#features" style="color:#9aa8b3" style-hover="color:#00d4aa">Features</a>
+          <a href="#protocols" style="color:#9aa8b3" style-hover="color:#00d4aa">Protocols</a>
+          <a href="#specs" style="color:#9aa8b3" style-hover="color:#00d4aa">Hardware</a>
+          <a href="https://hexa-ai.odoo.com/knowledge/article/65" style="color:#9aa8b3" style-hover="color:#00d4aa">Documentation</a>
+          <a href="security.html" style="color:#9aa8b3" style-hover="color:#00d4aa">Report a vulnerability</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#6b7884">Contact</p>
+          <a href="mailto:contact@hexa-ai.fr" style="color:#9aa8b3" style-hover="color:#00d4aa">contact@hexa-ai.fr</a>
+          <a href="tel:+33666740458" style="color:#9aa8b3" style-hover="color:#00d4aa">+33 6 66 74 04 58</a>
+          <span style="color:#6b7884;line-height:1.6">6 rue Jean Marie Chevalier<br>69390 Vourles, France</span>
+        </div>
+      </div>
+      <div style="margin-top:24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12.5px">
+        <p style="margin:0;color:#6b7884">© 2026 Hexa-AI. All rights reserved.</p>
+        <div style="display:flex;gap:20px">
+          <a href="https://www.hexa-ai.fr" style="color:#9aa8b3" style-hover="color:#00d4aa">hexa-ai.fr</a>
+          <a href="https://codesys.hexa-ai.fr" style="color:#9aa8b3" style-hover="color:#00d4aa">codesys.hexa-ai.fr</a>
+          <a href="https://www.linkedin.com/company/hexaai" style="color:#9aa8b3" style-hover="color:#00d4aa">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;flipTrigger&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;hover&quot;,&quot;click&quot;],&quot;default&quot;:&quot;hover&quot;,&quot;tsType&quot;:&quot;'hover' | 'click'&quot;,&quot;section&quot;:&quot;Feature cards&quot;},&quot;showBeta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Protocols&quot;}}">
+class Component extends DCLogic {
+  state = { flipped: [false, false, false] };
+
+  set(i, v) {
+    this.setState(s => {
+      const f = s.flipped.slice();
+      f[i] = v;
+      return { flipped: f };
+    });
+  }
+
+  componentDidMount() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    this._t = setTimeout(() => {
+      const ease = 'cubic-bezier(.22,.61,.36,1)';
+      const els = Array.from(document.querySelectorAll('[data-reveal]'));
+      els.forEach(el => {
+        if (el.dataset.revealReady) return;
+        el.dataset.revealReady = '1';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(18px)';
+        el.style.transition = 'opacity .6s ' + ease + ', transform .6s ' + ease;
+      });
+      this.io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const el = e.target;
+          const sibs = el.parentElement ? Array.from(el.parentElement.children).filter(c => c.hasAttribute('data-reveal')) : [];
+          const idx = Math.max(0, sibs.indexOf(el));
+          el.style.transitionDelay = Math.min(idx * 80, 320) + 'ms';
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+          this.io.unobserve(el);
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      els.forEach(el => this.io.observe(el));
+
+      const grid = document.querySelector('[data-schema]');
+      if (grid && !grid.dataset.animReady) {
+        grid.dataset.animReady = '1';
+        const kids = Array.from(grid.children);
+        const isArrow = i => i === 1 || i === 3 || i === 6;
+        kids.forEach((k, i) => {
+          k.style.opacity = '0';
+          k.style.transform = isArrow(i) ? 'scaleX(.04)' : 'translateY(10px)';
+          if (isArrow(i)) k.style.transformOrigin = 'left center';
+          k.style.transition = 'opacity .4s ease, transform .55s ' + ease;
+        });
+        this.io2 = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            [0, 5, 1, 2, 3, 6, 4].forEach((ki, step) => {
+              const k = kids[ki];
+              if (!k) return;
+              setTimeout(() => { k.style.opacity = '1'; k.style.transform = 'none'; }, step * 170);
+            });
+            this.io2.unobserve(e.target);
+          });
+        }, { threshold: 0.3 });
+        this.io2.observe(grid);
+      }
+
+      this.alarmFlow();
+    }, 80);
+  }
+
+  alarmFlow() {
+    const flow = document.querySelector('[data-alarmflow]');
+    if (!flow || flow.dataset.animReady) return;
+    flow.dataset.animReady = '1';
+    const node = flow.querySelector('[data-node]');
+    const tracks = Array.from(flow.querySelectorAll('[data-track]'));
+    const dots = Array.from(flow.querySelectorAll('[data-dot]'));
+    const chips = Array.from(flow.querySelectorAll('[data-chip]'));
+    const stats = Array.from(flow.querySelectorAll('[data-status]'));
+    const ring = flow.querySelector('[data-ring]');
+    this._timers = [];
+    const at = (ms, fn) => this._timers.push(setTimeout(fn, ms));
+
+    const reset = () => {
+      node.style.animation = 'none';
+      node.style.borderColor = '#2a3a47';
+      tracks.forEach(t => { t.style.transition = 'none'; t.style.transform = 'scaleX(0)'; });
+      dots.forEach(d => { d.style.transition = 'none'; d.style.opacity = '0'; d.style.left = '14px'; });
+      chips.forEach(c => { c.style.transition = 'opacity .35s ease, border-color .35s ease, transform .35s ease'; c.style.opacity = '.3'; c.style.borderColor = '#2a3a47'; c.style.transform = 'none'; });
+      stats.forEach((p, i) => { p.style.transition = 'opacity .35s ease'; p.style.opacity = i === 0 ? '1' : '0'; });
+      if (ring) ring.style.animation = 'none';
+      void flow.offsetWidth;
+    };
+
+    const send = (i, t0) => {
+      at(t0, () => {
+        tracks[i].style.transition = 'transform .55s cubic-bezier(.22,.61,.36,1)';
+        tracks[i].style.transform = 'scaleX(1)';
+        dots[i].style.transition = 'left .55s cubic-bezier(.4,0,.2,1), opacity .2s ease';
+        dots[i].style.opacity = '1';
+        dots[i].style.left = 'calc(100% - 22px)';
+      });
+      at(t0 + 560, () => {
+        dots[i].style.opacity = '0';
+        chips[i].style.opacity = '1';
+        chips[i].style.borderColor = 'rgba(0,212,170,.55)';
+        chips[i].style.transform = 'translateX(3px)';
+      });
+      at(t0 + 900, () => { chips[i].style.transform = 'none'; });
+    };
+
+    const run = () => {
+      reset();
+      at(120, () => { node.style.animation = 'haiAlarmGlow 1.3s ease-in-out 3'; });
+      send(0, 700);
+      send(1, 1500);
+      at(3000, () => { stats[0].style.opacity = '0'; stats[1].style.opacity = '1'; });
+      send(2, 3700);
+      at(4300, () => { if (ring) ring.style.animation = 'haiRing .5s ease-in-out 4'; });
+      at(6300, () => {
+        stats[1].style.opacity = '0';
+        stats[2].style.opacity = '1';
+        node.style.animation = 'none';
+        node.style.borderColor = 'rgba(0,212,170,.45)';
+        chips.forEach((c, i) => { if (i < 2) c.style.opacity = '.45'; });
+      });
+    };
+
+    let running = false;
+    this.io3 = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !running) {
+          running = true;
+          run();
+          this._loop = setInterval(run, 9600);
+        } else if (!e.isIntersecting && running) {
+          running = false;
+          clearInterval(this._loop);
+          this._timers.forEach(clearTimeout);
+          this._timers = [];
+        }
+      });
+    }, { threshold: 0.35 });
+    this.io3.observe(flow);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._loop);
+    if (this._timers) this._timers.forEach(clearTimeout);
+    if (this.io3) this.io3.disconnect();
+    clearTimeout(this._t);
+    if (this.io) this.io.disconnect();
+    if (this.io2) this.io2.disconnect();
+  }
+
+  set(i, v) {
+    this.setState(s => {
+      const f = s.flipped.slice();
+      f[i] = v;
+      return { flipped: f };
+    });
+  }
+
+  renderVals() {
+    const hover = (this.props.flipTrigger ?? 'hover') === 'hover';
+    const t = i => (this.state.flipped[i] ? 'rotateY(180deg)' : 'rotateY(0deg)');
+    const enter = i => (hover ? () => this.set(i, true) : undefined);
+    const leave = i => (hover ? () => this.set(i, false) : undefined);
+    const tog = i => () => this.set(i, !this.state.flipped[i]);
+    return {
+      t0: t(0), t1: t(1), t2: t(2),
+      in0: enter(0), in1: enter(1), in2: enter(2),
+      out0: leave(0), out1: leave(1), out2: leave(2),
+      tog0: tog(0), tog1: tog(1), tog2: tog(2),
+      hideBeta: !(this.props.showBeta ?? true),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page introuvable | Hexa-AI Edge</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0f14">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  /* Rattrapage des anciennes URLs de la plateforme Odoo.
+     Avant la bascule DNS, edge.hexa-ai.fr etait servi par Odoo (hexa-ai.odoo.com) :
+     les liens deja partis en mail (tickets, portail, articles Knowledge) arrivent
+     desormais ici. On les renvoie vers le meme chemin sur l'hote Odoo. */
+  (function(){
+    var ODOO = ["/knowledge", "/helpdesk", "/contactus", "/my", "/web", "/odoo",
+                "/blog", "/shop", "/event", "/forum", "/slides", "/survey", "/appointment"];
+    try {
+      var p = location.pathname;
+      for (var i = 0; i < ODOO.length; i++) {
+        if (p === ODOO[i] || p.indexOf(ODOO[i] + "/") === 0) {
+          location.replace("https://hexa-ai.odoo.com" + p + location.search + location.hash);
+          return;
+        }
+      }
+    } catch (e) {}
+  })();
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: #0a0f14; color: #e6edf3; font-family: Inter, system-ui, sans-serif;
+         line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: #00d4aa; text-decoration: none; }
+  .wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+          justify-content: center; text-align: center; padding: 48px 24px; position: relative; }
+  .grid { position: absolute; inset: -10%; pointer-events: none;
+          background-image: linear-gradient(rgba(0,212,170,.06) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(0,212,170,.06) 1px, transparent 1px);
+          background-size: 32px 32px; }
+  .fade { position: absolute; inset: 0; pointer-events: none;
+          background: radial-gradient(ellipse at 50% 45%, transparent 25%, #0a0f14 75%); }
+  .in { position: relative; max-width: 560px; }
+  .code { font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #00d4aa; }
+  h1 { margin: 14px 0 0; font-size: clamp(28px, 5vw, 40px); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+  p { margin: 18px 0 0; font-size: 16px; color: #9aa8b3; }
+  p.en { margin-top: 10px; font-size: 14px; color: #6b7884; }
+  .go { margin-top: 34px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .b { display: inline-flex; align-items: center; gap: 8px; padding: 14px 22px; border-radius: 8px;
+       font-size: 15px; font-weight: 600; line-height: 1; border: 1px solid #2a3a47; color: #e6edf3;
+       transition: border-color .15s, color .15s, transform .15s; }
+  .b:hover { border-color: #00d4aa; color: #00d4aa; transform: translateY(-2px); }
+  .b.p { background: #00d4aa; border-color: #00d4aa; color: #0a0f14; box-shadow: 0 6px 20px rgba(0,212,170,.25); }
+  .b.p:hover { background: #1ae5bb; color: #0a0f14; }
+  .foot { margin-top: 40px; font-size: 13px; color: #6b7884; }
+  .foot a { color: #9aa8b3; }
+  .foot a:hover { color: #00d4aa; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grid" aria-hidden="true"></div>
+    <div class="fade" aria-hidden="true"></div>
+    <div class="in">
+      <span class="code">Erreur 404</span>
+      <h1>Cette page n'existe pas <span style="color:#00d4aa">ou a déménagé.</span></h1>
+      <p>Le lien que vous avez suivi ne correspond à aucune page du site. Les articles de documentation et l'espace client ont, eux, leur propre adresse.</p>
+      <p class="en">This page does not exist or has moved. Documentation and the customer portal have their own address.</p>
+      <div class="go">
+        <a class="b p" href="/">Retour à l'accueil</a>
+        <a class="b" href="https://hexa-ai.odoo.com/knowledge/article/65">Documentation</a>
+        <a class="b" href="/en/">English version</a>
+      </div>
+      <p class="foot">Besoin d'aide ? <a href="mailto:support@hexa-ai.fr">support@hexa-ai.fr</a> · <a href="mailto:contact@hexa-ai.fr">contact@hexa-ai.fr</a></p>
+    </div>
+  </div>
+</body>
+</html>
