@@ -51,6 +51,44 @@
 </script>
 
 <script src="./support.js"></script>
+<style id="hai-responsive">
+  /* Adaptation mobile. Les pages sont generees avec des styles inline et aucune
+     media query : les !important sont necessaires pour reprendre la main. */
+  @media (max-width: 860px) {
+    /* Header : on masque les ancres de section (la page se parcourt au defilement),
+       on garde le logo, la documentation, le selecteur de langue et le CTA. */
+    nav a[href^="#"] { display: none !important; }
+
+    /* Toute grille multi-colonnes repasse en colonne unique. */
+    [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
+
+    /* Sauf les grilles de vignettes, qui gardent plusieurs colonnes serrees. */
+    [style*="minmax(200px"] { grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)) !important; }
+    [style*="minmax(250px"] { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important; }
+
+    /* Enfants places explicitement dans une grille : retour au flux normal. */
+    [style*="grid-area"], [style*="grid-column"], [style*="grid-row"] { grid-area: auto !important; }
+
+    /* Respirations verticales reduites. */
+    [style*="padding:104px 0"] { padding: 64px 0 !important; }
+    [style*="padding:96px 0 88px"] { padding: 56px 0 64px !important; }
+    [style*="padding:88px 0"] { padding: 56px 0 !important; }
+    [style*="padding:72px 0 88px"] { padding: 48px 0 56px !important; }
+    [style*="padding:56px 0 32px"] { padding: 40px 0 24px !important; }
+    [style*="gap:56px"] { gap: 32px !important; }
+    [style*="gap:48px"] { gap: 28px !important; }
+  }
+  @media (max-width: 560px) {
+    /* Tres petits ecrans : le bouton Documentation sort du header (il reste
+       accessible depuis la section contact et le pied de page). */
+    nav a[href*="/knowledge"] { display: none !important; }
+
+    /* Pages securite : le lien de retour fait doublon avec le logo, qui pointe
+       deja sur la page produit. */
+    nav > div > div > a[href="index.html"] { display: none !important; }
+    nav > div { padding: 8px 16px !important; }
+  }
+</style>
 </head>
 <body>
 <x-dc>

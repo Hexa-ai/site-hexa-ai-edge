@@ -113,9 +113,11 @@ Le déploiement prend une à deux minutes. Le site est alors visible sur `https:
 
 **b. Côté DNS** — chez le registrar du domaine `hexa-ai.fr`, remplace l'enregistrement existant de `edge` par :
 
-| Type  | Nom    | Valeur              | TTL  |
-|-------|--------|---------------------|------|
-| CNAME | `edge` | `hexa-ai.github.io.` | 3600 |
+| Type  | Nom    | Valeur               | TTL     |
+|-------|--------|----------------------|---------|
+| CNAME | `edge` | `hexa-ai.github.io.` | défaut  |
+
+Le TTL par défaut d'OVH (3600 s, soit 1 h) convient très bien — c'est celui utilisé par `www.hexa-ai.fr`. Il ne détermine que la durée de mise en cache de la réponse chez les résolveurs, sans effet sur les performances ni sur le référencement. Un TTL court (300 s) n'a d'intérêt que s'il est posé **avant** une bascule, pour raccourcir la traîne de propagation et pouvoir revenir en arrière rapidement.
 
 S'il existe déjà un enregistrement `A`, `AAAA` ou `CNAME` sur `edge`, il faut le **supprimer** : un nom ne peut pas avoir à la fois un CNAME et d'autres enregistrements.
 
@@ -145,6 +147,7 @@ curl -sI https://edge.hexa-ai.fr/ | head -1
 - [ ] Le header reste collé en haut au défilement
 - [ ] `https://edge.hexa-ai.fr/helpdesk` renvoie bien vers `https://hexa-ai.odoo.com/helpdesk`
 - [ ] `https://edge.hexa-ai.fr/nimportequoi` affiche la page 404 de la charte
+- [ ] Sur téléphone : header sur une ou deux lignes, aucune barre de défilement horizontale, contenus empilés en une colonne
 
 Puis déclarer le site dans la Search Console :
 `https://search.google.com/search-console` → *Ajouter une propriété* → préfixe d'URL `https://edge.hexa-ai.fr/` → soumettre `https://edge.hexa-ai.fr/sitemap.xml`.
@@ -191,7 +194,7 @@ L'outil de design réexporte les pages sous leurs noms d'origine (`HAI-P200 EN.d
 | `HAI-P200 EN.dc.html` | `en/index.html` |
 | `Securite EN.dc.html` | `en/security.html` |
 
-Attention, les pages du dossier `en/` ont leurs chemins de ressources préfixés par `../` (`../img/…`, `../support.js`), et chaque page contient dans son `<head>` un bloc SEO + le script de langue qui n'existent pas dans l'export brut. Le plus sûr est de ne réimporter que le corps de page (`<x-dc>…</x-dc>`) et de conserver le `<head>` du dépôt.
+Attention, les pages du dossier `en/` ont leurs chemins de ressources préfixés par `../` (`../img/…`, `../support.js`), et chaque page contient dans son `<head>` trois ajouts absents de l'export brut : le bloc SEO, le script de langue et la feuille `<style id="hai-responsive">` qui rend la page utilisable sur mobile. Le plus sûr est de ne réimporter que le corps de page (`<x-dc>…</x-dc>`) et de conserver le `<head>` du dépôt.
 
 Ensuite :
 
