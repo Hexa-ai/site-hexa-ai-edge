@@ -34,6 +34,9 @@ Si tu préfères ne rien risquer dans un premier temps, publie d'abord sur l'URL
 ├── index.html              → https://edge.hexa-ai.fr/            (FR)
 ├── 404.html                page 404 + reprise des anciennes URLs Odoo
 ├── securite.html           → /securite.html                      (FR)
+├── terms/
+│   ├── index.html          → /terms/   conditions générales (FR)
+│   └── conditions-generales-de-vente-v2.1.pdf
 ├── en/
 │   ├── index.html          → /en/                                (EN)
 │   └── security.html       → /en/security.html                   (EN)
@@ -193,6 +196,8 @@ L'outil de design réexporte les pages sous leurs noms d'origine (`HAI-P200 EN.d
 | `Securite.dc.html` | `securite.html` |
 | `HAI-P200 EN.dc.html` | `en/index.html` |
 | `Securite EN.dc.html` | `en/security.html` |
+
+La page `/terms/` et le `404.html` sont écrits à la main, hors outil de design : ils ne sont pas concernés par les réexports.
 
 Attention, les pages du dossier `en/` ont leurs chemins de ressources préfixés par `../` (`../img/…`, `../support.js`), et chaque page contient dans son `<head>` trois ajouts absents de l'export brut : le bloc SEO, le script de langue et la feuille `<style id="hai-responsive">` qui rend la page utilisable sur mobile. Le plus sûr est de ne réimporter que le corps de page (`<x-dc>…</x-dc>`) et de conserver le `<head>` du dépôt.
 
