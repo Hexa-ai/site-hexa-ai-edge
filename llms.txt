@@ -1,6 +1,6 @@
 # Hexa-AI Edge — HAI-P200-4G
 
-> Site produit de la passerelle industrielle HAI-P200-4G, conçue et éditée par Hexa-AI (société d'ingénierie en automatisme industriel basée à Brignais, Lyon Sud). Une box qui se place entre les automates d'une installation et le bureau de l'exploitant : collecte multi-protocoles, historisation locale, courbes automatiques, alertes contextualisées et accès distant Tailscale intégré — sans développement, sans licence, sans intervention IT.
+> Site produit de la passerelle industrielle HAI-P200-4G, conçue et éditée par Hexa-AI (société d'ingénierie en automatisme industriel basée à Vourles, Lyon Sud). Une box qui se place entre les automates d'une installation et le bureau de l'exploitant : collecte multi-protocoles, historisation locale, courbes automatiques, alertes contextualisées et accès distant Tailscale intégré — sans développement, sans licence, sans intervention IT.
 
 ## Identité
 

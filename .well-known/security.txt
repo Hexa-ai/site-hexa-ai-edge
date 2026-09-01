@@ -1,0 +1,11 @@
+# Hexa-AI Edge — HAI-P200-4G
+# Politique de divulgation coordonnée / Coordinated vulnerability disclosure
+# https://edge.hexa-ai.fr/securite.html
+
+Contact: mailto:securite@hexa-ai.fr
+Contact: tel:+33666740458
+Expires: 2027-09-01T00:00:00.000Z
+Policy: https://edge.hexa-ai.fr/securite.html
+Policy: https://edge.hexa-ai.fr/en/security.html
+Preferred-Languages: fr, en
+Canonical: https://edge.hexa-ai.fr/.well-known/security.txt
