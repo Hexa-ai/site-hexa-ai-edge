@@ -13,7 +13,7 @@ Un nom de domaine ne pouvant pointer que vers un seul hébergeur, brancher GitHu
 
 Deux dispositions ont donc été prises dans le dépôt :
 
-1. **Les boutons « Documentation » pointent désormais vers `https://hexa-ai.odoo.com/knowledge/article/65`** (8 liens sur les 4 pages). Ils resteront valides avant comme après la bascule.
+1. **Les boutons « Documentation » pointent vers `https://docs.hexa-ai.fr/`** (9 liens sur les 5 pages, `404.html` comprise), et vers `https://docs.hexa-ai.fr/en/` sur les pages anglaises. Ils visaient auparavant la base de connaissances Odoo, `https://hexa-ai.odoo.com/knowledge/article/65` ; celle-ci reste en ligne mais n'est plus la documentation de référence.
 2. **Le fichier `404.html` rattrape les anciennes URLs Odoo.** GitHub Pages sert cette page pour tout chemin inconnu ; un script y détecte les chemins Odoo (`/knowledge`, `/helpdesk`, `/my`, `/web`, `/contactus`, `/odoo`, `/blog`, `/shop`, `/event`, `/forum`, `/slides`, `/survey`, `/appointment`) et renvoie le visiteur vers le même chemin sur `hexa-ai.odoo.com`. Un lien `edge.hexa-ai.fr/helpdesk/12` déjà parti dans un mail client continuera donc d'aboutir. Les autres chemins inconnus affichent une vraie page 404 aux couleurs de la charte.
 
 > Cette reprise se fait en JavaScript, avec un code HTTP 404 : parfait pour un humain qui clique un vieux lien, mais invisible pour les moteurs de recherche. Si des URLs Odoo sont bien référencées dans Google, la solution propre reste de les faire disparaître de l'index ou de les republier sous `hexa-ai.odoo.com`.
